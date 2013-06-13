@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!-- ex with eqlumi <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" EqLumi="2287."/> -->
+<!-- ex with NofEvts <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
+<!-- ex with PreselEff NofPSEvts <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofEvts="218404"/> -->
+
+<Datasets>
+<!-- add = 1 : run on the sample
+     add = 0 : do not run on the sample
+     isData = 1 for data; = 0  for MC
+     ls = lineStyle //not yet used
+     lw = lineWidth //not yet used
+     !! important:
+	2 of the 3 information need to be filled
+		- normf (normalisation factor - default = 1)
+		- xsection (cross-section of the processus if it's MC - default = 1)
+		- NofEvts (could be lower than the size of the file. If it's higher or equal to the size, the program will run on the full sample)
+     Preselection
+	if a preselection has been applied before use
+		- PreselEff
+		- NofPSEvts instead of NofEvts 
+ -->
+
+<!--
+<d name="DataMu" add="1" isData="1" color="2" ls="1" lw="2" normf="1" xsection="1" filenames="/opt/sbg/data/data1/cms/gele/MCData/CMSSW_4_2_3/V1/DiLeptonDataDoubleMu/DoubleMuNTuple.root" />
+<d name="DataEG" add="1" isData="1" color="2" ls="1" lw="2" normf="1" xsection="1" filenames="/opt/sbg/data/data1/cms/gele/MCData/CMSSW_4_2_3/V1/DiLeptonDataDoubleElectron/DoubleEGNTuple.root" />
+<d name="DataMuEG" add="1" isData="1" color="2" ls="1" lw="2" normf="1" xsection="1" filenames="/opt/sbg/data/data1/cms/gele/MCData/CMSSW_4_2_3/V1/DiLeptonDataMuEG/DoubleMuEGNTuple.root" />
+-->
+
+<!--d name="LM1" add="1" isData="0" color="5" ls="1" lw="2" normf="1" xsection="2.4" filenames="/opt/sbg/cms/ui3_data3/econte/CMSSW_4_2_5/src/NTuple/NTupleAnalysis/macros/RPVSameSignDiLeptons/TTbar.root" /--> 
+<!--
+<d name="TTbar" add="1" isData="0" color="2" ls="1" lw="2" normf="1" xsection="157.5" filenames="/opt/sbg/cms/ui3_data3/econte/CMSSW_4_2_5/src/NTuple/NTupleAnalysis/macros/RPVSameSignDiLeptons/TTbar.root" />
+
+
+<d name="DYToMuMu_M-20"       add="1" isData="0" color="4" ls="1" lw="2" normf="1" xsection="1666" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/DYToMuMu_M-20.root" />
+<d name="DYToEE_M-20"	      add="1" isData="0" color="4" ls="1" lw="2" normf="1" xsection="1666" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/DYToEE_M-20.root" />
+<d name="DYToTauTau_M-20"     add="1" isData="0" color="4" ls="1" lw="2" normf="1" xsection="1666" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/DYToTauTau_M-20.root"
+
+<d name="DYToMuMu_M-10To20"       add="1" isData="0" color="4" ls="1" lw="2" normf="1" xsection="3457" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/DYToMuMu_M-10To20.root" />
+<d name="DYToEE_M-10To20"	  add="1" isData="0" color="4" ls="1" lw="2" normf="1" xsection="3457" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/DYToEE_M-10To20.root" />
+
+<d name="Wjets"  add="1" isData="0" color="4" ls="1" lw="2" normf="1" xsection="31314" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/WJetsToLNu.root"/>
+<d name="Zjets"  add="1" isData="0" color="4" ls="1" lw="2" normf="1" xsection="3048" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/DYJetsToLL.root"/>
+
+<d name="TtW" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="7.87" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/T_tW-channel-DR.root" />
+<d name="Ts" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="3.19" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/T_s-channel.root" />
+<d name="Tt" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="41.92" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/T_t-channel.root" />
+<d name="TbartW" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="7.87" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/Tbar_tW-channel-DR.root" />
+<d name="Tbars" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="1.44" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/Tbar_s-channel.root" />
+<d name="Tbart" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="22.65" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/Tbar_t-channel.root" />
+-->
+
+<!-- xsection fausses : pour Lmu ou LL ... -->
+<d name="WZ" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="0.61" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/WZ.root"/>
+<!--d name="ZZ" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="7.4" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/ZZ.root" />
+<d name="WW" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="4.51" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/WW.root" />
+-->
+
+<!-- Samples QCD -->
+<!--
+<d name="QCD1" add="0" isData="0"  color="4" ls="1" lw="2" normf="1" xsection="8.159e+08" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt-15to30.root" />
+<d name="QCD2" add="0" isData="0"  color="4" ls="1" lw="2" normf="1" xsection="5.312e+07" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt-30to50.root" />
+<d name="QCD3" add="0" isData="0"  color="4" ls="1" lw="2" normf="1" xsection="6.359e+06" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt-50to80.root" />
+<d name="QCD4" add="0" isData="0"  color="4" ls="1" lw="2" normf="1" xsection="7.843e+05" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt_80to120.root" />
+<d name="QCD5" add="0" isData="0"  color="4" ls="1" lw="2" normf="1" xsection="1.151e+05" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt_120to170.root" />
+<d name="QCD6" add="0" isData="0"  color="4" ls="1" lw="2" normf="1" xsection="2.426e+04" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt_170to300.root" />
+<d name="QCD7" add="0" isData="0"  color="4" ls="1" lw="2" normf="1" xsection="1.168e+03" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt_300to470.root" />
+<d name="QCD8" add="0" isData="0"  color="4" ls="1" lw="2" normf="1" xsection="7.022e+01" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt_470to600.root" />
+<d name="QCD9" add="0" isData="0"  color="4" ls="1" lw="2" normf="1" xsection="1.555e+01" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt_600to800.root" />
+<d name="QCD10" add="0" isData="0" color="4" ls="1" lw="2" normf="1" xsection="1.844e+00" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt_800to1000.root" />
+<d name="QCD11" add="0" isData="0" color="4" ls="1" lw="2" normf="1" xsection="3.321e-01" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt_1000to1400.root" />
+<d name="QCD12" add="0" isData="0" color="4" ls="1" lw="2" normf="1" xsection="1.087e-02" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt_1400to1800.root" />
+<d name="QCD13" add="0" isData="0" color="4" ls="1" lw="2" normf="1" xsection="3.575e-04" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/QCD_Pt_1800.root" />
+-->
+
+</Datasets>
+
+<Analysis>
+<!--
+	DataType = 0: MC
+	DataType = 1: Data
+	DataType = 2: Data & MC
+	Luminosity in in pb-1
+-->
+<!--a type="General" Verbosity="3" DataType="0" Luminosity="38.35"/>
+<a type="General" Verbosity="3" DataType="0" Luminosity="204.2" LumiError="12." PUWeightFile="/opt/sbg/data/data1/cms/echabert/TopDilep/CMSSW_4_1_4/src/MiniTreeAnalysis/NTupleAnalysis/macros/pudist_200pb.root" />
+-->
+<a type="General" Verbosity="3" DataType="0" Luminosity="881.8" LumiError="53." PUWeightFile="/opt/sbg/data/data1/cms/ccollard/CMSSW/fichier_root2011/pileup_160404_167151.root" />
+</Analysis>
+
+<Selection>
+<s type="Electron" Loaded="1" Algo="selectedPatElectronsPF2PAT" PtThreshold="10." EtaThreshold="2.5" RelIso="0.17" D0Cut="0.04" VertexMatchThr="1." DElectronETSCThr="15" RemuThr="0.1"/>
+<s type="Muon"     Loaded="1" Algo="selectedPatMuonsPF2PAT" PtThreshold="10." EtaThreshold="2.4" RelIso="0.20" D0Cut="0.02" VertexMatchThr="1." NofValidHits="0"  NofValidTkHits="10" NormChi2="10" />
+<s type="Tau"      Loaded="0" Algo="selectedPatTaus" PtThreshold="20." EtaThreshold="2.5" RelIso="0.15" D0Cut="0.04" VertexMatchThr="1." TauLeadTrkPtCut="10."/>
+<s type="Vertex"   Loaded="1" Algo="offlinePrimaryVertices" VertexNdofThr="4" VertexZThr="24."   VertexRhoThr="2." />
+<!--  
+<s type="Jet" Algo="tc" PtThreshold="30." EtaThreshold="2.5" />
+-->
+<s type="Jet" Loaded="1" Algo="pf" PtThreshold="10." EtaThreshold="2.5" />   
+</Selection>
+
+<SSDiLeptonSelection>
+<!-- btagAlgo = 
+0 for TrackCounting
+1 for SecondarayVertex
+2 for SM
+-->
+<s MinMassCut="0." METCutsEMU="50." METCutsLL="50." ZMassWindowMin="9999." ZMassWindowMax="0." btagAlgo="0" btagDiscriCut="1.7" NofBtagJets="0" />
+</SSDiLeptonSelection>
+

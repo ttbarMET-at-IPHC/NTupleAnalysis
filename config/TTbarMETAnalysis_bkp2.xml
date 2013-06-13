@@ -1,0 +1,354 @@
+<?xml version="1.0"?>
+<!-- ex with eqlumi <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" EqLumi="2287."/> -->
+<!-- ex with NofEvts <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
+<!-- ex with PreselEff NofPSEvts <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofEvts="218404"/> -->
+
+<!--
+	#################################################
+	#            Analysis configuration             #
+	#################################################
+-->
+
+<Analysis>
+<!--
+	DataType = [ 0: MC ; 1: Data ; 2 : Data & MC ]
+	Luminosity in in pb-1
+-->
+<!--a type="General" Verbosity="3" DataType="0" Luminosity="38.35"/>
+<a type="General" Verbosity="3" DataType="0" Luminosity="204.2" LumiError="12." PUWeightFile="/opt/sbg/data/data1/cms/echabert/TopDilep/CMSSW_4_1_4/src/MiniTreeAnalysis/NTupleAnalysis/macros/pudist_200pb.root" />
+-->
+<a 						
+   type="General" 
+   Verbosity="3" 
+   DataType="0" 
+   Luminosity="2288.8" 
+   LumiError="2284.1" 
+   PUWeightFile="/opt/sbg/data/data1/cms/ccollard/CMSSW/fichier_root2011/pileup_160404_167151.root" 
+/>
+</Analysis>
+
+<!--
+	#################################################
+	#            Datasets configuration             #
+	#################################################
+-->
+
+<Datasets>
+<!-- add = 1 : run on the sample
+     add = 0 : do not run on the sample
+     isData = 1 for data; = 0  for MC
+     ls = lineStyle //not yet used
+     lw = lineWidth //not yet used
+     !! important:
+	2 of the 3 information need to be filled
+		- normf (normalisation factor - default = 1)
+		- xsection (cross-section of the processus if it's MC - default = 1)
+		- NofEvts (could be lower than the size of the file. If it's higher or equal to the size, the program will run on the full sample)
+     Preselection
+	if a preselection has been applied before use
+		- PreselEff
+		- NofPSEvts instead of NofEvts 						 
+	 NofEvts="250000" 
+ -->
+
+<!--        WG / WW + stuff
+<d  name="WWJetsTo2L2Nu" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/WWJetsTo2L2Nu/*.root" />
+<d  name="WGstarToLNu2E" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/WGstarToLNu2E/*.root" />
+<d  name="WGstarToLNu2Mu" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/WGstarToLNu2Mu/*.root" />
+<d  name="WGstarToLNu2Tau" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/WGstarToLNu2Tau/*.root" />
+<d  name="WWWJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+    filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/WWWJets/*.root" />
+<d  name="WWZNoGstarJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+    filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/WWZNoGstarJets/*.root" />
+<d  name="WWGJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+    filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/WWGJets/*.root" />
+-->
+
+<!--    WZ + stuff
+<d  name="WZJetsTo3LNu" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/WZJetsTo3LNu/*.root" />
+<d  name="WZJetsTo2L2Q" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/WZJetsTo2L2Q/*.root" />
+<d  name="WZZNoGstarJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+    filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/WZZNoGstarJets/*.root" />
+-->
+
+<!--    ZZ + stuff  (except one dataset)
+<d  name="ZZJetsTo2L2Nu" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/ZZJetsTo2L2Nu/*.root" />
+<d  name="ZZJetsTo2L2Q" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/ZZJetsTo2L2Q/*.root" />
+<d  name="ZZZNoGstarJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/ZZZNoGstarJets/*.root" />
+-->
+
+<!--    ZZJetsTo4L
+<d  name="ZZJetsTo4L" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/ZZJetsTo4L/*.root" />
+-->
+
+<!--    DY4Jets
+<d  name="DY4Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/DY4Jets/*.root" />
+-->
+
+
+<!--                W2Jets
+<d  name="W2Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/W2Jets/*.root" />
+-->
+<!--                W2Jets-more
+<d  name="W2Jets_more" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/W2Jets_more/*.root" />
+-->
+<!--                W3Jets
+<d  name="W3Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/W3Jets/*.root" />
+-->
+
+<!--                W3Jets-more
+<d  name="W3Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/W3Jets_more/*.root" />
+-->
+<!--                W4Jets
+<d  name="W4Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/W4Jets/*.root" />
+-->
+<!--                W4Jets-more
+<d  name="W4Jets_more" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/W4Jets_more/*.root" />
+-->
+
+
+
+<!--        TT + V / VV
+<d  name="TBZToLL" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/TBZToLL/*.root" />
+<d  name="TTGJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/TTGJets/*.root" />
+<d  name="TTWJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/TTWJets/*.root" />
+<d  name="TTWWJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/TTWWJets/*.root" />
+<d  name="TTZJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/TTZJets/*.root" />
+-->
+
+<!--            Singletop_Tbar
+<d  name="Singletop_Tbar_s" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/Singletop_Tbar_s/*.root" />
+<d  name="Singletop_Tbar_t" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/Singletop_Tbar_t/*.root" />
+<d  name="Singletop_Tbar_tW" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/Singletop_Tbar_tW/*.root" />
+-->
+
+<!--            Singletop_T
+<d  name="Singletop_T_s" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/Singletop_T_s/*.root" />
+<d  name="Singletop_T_tW" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/Singletop_T_tW/*.root" />
+-->
+<!--   
+<d  name="Singletop_T_t" add="1" isData="0" NofEvts="-1" normf="1" xsection="1." 
+	filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/Singletop_T_t/*.root" />
+-->
+
+<!--
+<d  name="ttbarFullLept" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/ttbarFullLept/*.root" />
+-->
+
+<d  name="ttbarSemiLept" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/ttbarSemiLept/*.root" />
+
+<!--                                               s
+<d  name="ttbarFullLept" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/ttbarFullLept/*.root" />
+-->
+<!--
+<d  name="ttbarFullLept_more" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/ttbarFullLept_more/*.root" />
+-->
+
+<!--                                                warning : edited NofEvents
+<d  name="ttbarSemiLept" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/ttbarSemiLept/*.root" />
+-->
+<!--
+<d  name="ttbarSemiLept_more" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/prod_tauVetoValidation_Alpha/store/skimmed/ttbarSemiLept_more/*.root" />
+-->
+
+
+
+
+
+
+
+<!--
+                            DATA DATA DATA DATA DATA DATA
+-->
+
+
+
+
+<!--
+<d  name="Elec_A" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Elec_A/*.root" />
+-->
+<!--
+<d  name="Elec_B-1" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Elec_B/1/*.root" />
+-->
+<!--
+<d  name="Elec_B-2" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Elec_B/2/*.root" />
+-->
+<!--
+<d  name="Elec_B-3" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Elec_B/3/*.root" />
+-->
+<!--
+<d  name="Elec_C1" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Elec_C1/*.root" />
+-->
+<!--
+<d  name="Elec_C2-1" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Elec_C2/1/*.root" />
+-->
+<!--
+<d  name="Elec_C2-2" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Elec_C2/2/*.root" />
+-->
+<!--
+<d  name="Elec_D-1" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Elec_D/1/*.root" />
+-->
+<!--
+<d  name="Elec_D-2" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Elec_D/2/*.root" />
+-->
+
+
+
+
+<!--
+<d  name="Muon_A" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Muon_A/*.root" />
+-->
+<!--
+<d  name="Muon_B-1" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Muon_B/1/*.root" />
+-->
+<!--
+<d  name="Muon_B-2" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Muon_B/2/*.root" />
+-->
+<!--
+<d  name="Muon_C1" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Muon_C1/*.root" />
+-->
+<!-- 
+<d  name="Muon_C2-1" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Muon_C2/1/*.root" />
+-->
+<!--
+<d  name="Muon_C2-2" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Muon_C2/2/*.root" />
+-->
+<!-- 
+<d  name="Muon_C2-3" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Muon_C2/3/*.root" />
+-->
+<!-- 
+<d  name="Muon_D-1" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Muon_D/1/*.root" />
+-->
+<!-- 
+<d  name="Muon_D-2" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Muon_D/2/*.root" />
+-->
+<!-- 
+<d  name="Muon_D-3" add="1" isData="1" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/partialSkim/Muon_D/3/*.root" />
+-->
+
+
+</Datasets>
+
+<!--
+	#################################################
+	#            Selection configuration            #
+	#################################################
+-->
+
+<Selection>
+	
+<s 
+	type="Electron" 
+	Loaded="1" 
+	Algo="selectedPatElectrons" 
+	PtThreshold="30." 
+	EtaThreshold="1.4442" 
+	RelIso="0.15" 
+	D0Cut="0.02" 
+	VertexMatchThr="9999." 
+	DElectronETSCThr="99999." 
+	RemuThr="0.1"
+/>
+<s 
+	type="Muon"
+	Loaded="1"
+	Algo="selectedPatMuons" 
+	PtThreshold="30." 
+	EtaThreshold="2.1" 
+	RelIso="0.15" 
+	D0Cut="0.02" 
+	VertexMatchThr="1." 
+	NofValidHits="0"  
+	NofValidTkHits="10" 
+	NormChi2="10" 
+/>
+<s 
+	type="Tau"      
+	Loaded="1" 
+	Algo="selectedPatTaus" 
+	PtThreshold="20." 
+	EtaThreshold="2.5" 
+	RelIso="0.15" 
+	D0Cut="0.04" 
+	VertexMatchThr="1." 
+	TauLeadTrkPtCut="10."
+/>
+<s 
+	type="Vertex"   
+	Loaded="1" 
+	Algo="goodVertices" 
+	VertexNdofThr="4" 
+	VertexZThr="24."   
+	VertexRhoThr="2." 
+/>
+<s 
+	type="PFCandidate"
+	Loaded="1"
+	Algo="particleFlow"
+/>
+<s 
+	type="Jet" 
+	Loaded="1" 
+	Algo="pf" 
+	PtThreshold="30." 
+	EtaThreshold="2.5"
+/> 
+<s 
+	type="HeavyTagJet" 
+	Loaded="1" 
+	Algo="AK8Trimmed"
+/>
+
+</Selection>

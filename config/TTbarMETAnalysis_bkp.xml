@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!-- ex with eqlumi <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" EqLumi="2287."/> -->
+<!-- ex with NofEvts <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
+<!-- ex with PreselEff NofPSEvts <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofEvts="218404"/> -->
+
+<Datasets>
+<!-- add = 1 : run on the sample
+     add = 0 : do not run on the sample
+     isData = 1 for data; = 0  for MC
+     ls = lineStyle //not yet used
+     lw = lineWidth //not yet used
+     !! important:
+	2 of the 3 information need to be filled
+		- normf (normalisation factor - default = 1)
+		- xsection (cross-section of the processus if it's MC - default = 1)
+		- NofEvts (could be lower than the size of the file. If it's higher or equal to the size, the program will run on the full sample)
+     Preselection
+	if a preselection has been applied before use
+		- PreselEff
+		- NofPSEvts instead of NofEvts 
+ -->
+
+<!-- xsection fausses : pour Lmu ou LL ... 
+<d name="DataMu" add="1" isData="1" color="2" ls="1" lw="2" normf="1" xsection="1" filenames="/opt/sbg/data/data1/cms/gele/MCData/CMSSW_4_2_3/V1/DiLeptonDataDoubleMu/DoubleMuNTuple.root" />
+<d name="WZ" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="0.61" filenames="/opt/sbg/data/data1/cms/jlagram/data/Summer11/WZ.root"/>
+-->
+<d name="DataMu" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="1." filenames="/opt/sbg/data/data2/cms/aaubin/CMSSW_5_3_2_patch4/src/PhysicsTools/Configuration/test/NTuple_1000events.root"/>
+<d name="DataEG" add="1" isData="0" color="6" ls="1" lw="2" normf="1" xsection="1." filenames="/opt/sbg/data/data2/cms/aaubin/CMSSW_5_3_2_patch4/src/PhysicsTools/Configuration/test/NTuple_1000events.root"/>
+
+<!--
+<d name="DataMu" add="0" isData="1" color="6" ls="1" lw="2" normf="1" xsection="1." filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_SingleMu_2011*.root"/>
+<d name="DataEG" add="0" isData="1" color="6" ls="1" lw="2" normf="1" xsection="1." filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_SingleElectron_2011A*root"/>
+<d name="signal" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="2.20" filenames="/opt/sbg/data/data1/cms/ccollard/files/TTbarMet/Signal_v1/IPHC428_ttbarMET_t1A0_semilep_350_100/NTuple_1_1_GKP.root"/>
+<!-- ttbar MC de TOP-11-005 -->
+<d name="ttbar" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="164.0" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_TTJets_*.root"/>
+<!-- W+jets https://hypernews.cern.ch/HyperNews/CMS/get/generators/1324.html && http://cms.cern.ch/iCMS/prep/requestmanagement?campid=Fall11_R2 -->
+<!-- PREP * 31314/27770  NLO -->
+<d name="W1Jet" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="5051.7" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_W1Jet_*.root"/>
+<d name="W2Jet" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="1618.1" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_W2Jets.root"/>
+<d name="W3Jet" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="342.8" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_W3Jets.root"/>
+<d name="W4Jet" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="194.6" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_W4Jets.root"/>
+<!-- DY https://twiki.cern.ch/twiki/bin/view/CMS/TTbarHiggs#Background  NLO-->
+<d name="DY1" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="12782.6" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_DYJets_M-10To50_*.root"/>
+<d name="DY2" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="3048" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_DYJets_M50_*.root"/>
+<!-- diboson : https://twiki.cern.ch/twiki/bin/view/CMS/TTbarHiggs#Background  NLO -->
+<d name="WW" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="43" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_WW.root"/>
+<d name="WZ" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="18.2" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_WZ.root"/>
+<d name="ZZ" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="5.9" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_ZZ.root"/>
+<!-- single top : https://twiki.cern.ch/twiki/bin/viewauth/CMS/TWikiTop2011DataMCTrig Reference sample Summer11 (42X) -->
+<!-- aussi sur https://twiki.cern.ch/twiki/bin/view/CMS/TTbarHiggs#Background  NLO  -->
+<d name="singleTop1" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="3.19" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_T_s.root"/>
+<d name="singleTop2" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="41.92" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_T_t.root"/>
+<d name="singleTop3" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="7.87" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_T_tW.root"/>
+<d name="singleTop4" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="1.44" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_Tbar_s.root"/>
+<d name="singleTop5" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="22.65" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_Tbar_t.root"/>
+<d name="singleTop6" add="0" isData="0" color="6" ls="1" lw="2" normf="1" xsection="7.87" filenames="/opt/sbg/cms/ui6_data1/ccollard/skim/skim_Tbar_tW.root"/>
+-->
+
+</Datasets>
+
+<Analysis>
+<!--
+	DataType = 0: MC
+	DataType = 1: Data
+	DataType = 2: Data & MC
+	Luminosity in in pb-1
+-->
+<!--a type="General" Verbosity="3" DataType="0" Luminosity="38.35"/>
+<a type="General" Verbosity="3" DataType="0" Luminosity="204.2" LumiError="12." PUWeightFile="/opt/sbg/data/data1/cms/echabert/TopDilep/CMSSW_4_1_4/src/MiniTreeAnalysis/NTupleAnalysis/macros/pudist_200pb.root" />
+-->
+<a type="General" Verbosity="3" DataType="0" Luminosity="2288.8" LumiError="2284.1" PUWeightFile="/opt/sbg/data/data1/cms/ccollard/CMSSW/fichier_root2011/pileup_160404_167151.root" />
+</Analysis>
+
+<Selection>
+<s type="Electron" Loaded="1" Algo="selectedPatElectronsPF" PtThreshold="35." EtaThreshold="2.4" RelIso="0.10" D0Cut="0.02" VertexMatchThr="9999." DElectronETSCThr="99999." RemuThr="0.1"/>
+<s type="Muon"     Loaded="1" Algo="selectedPatMuonsPF" PtThreshold="35." EtaThreshold="2.1" RelIso="0.125" D0Cut="0.02" VertexMatchThr="1." NofValidHits="0"  NofValidTkHits="10" NormChi2="10" />
+<s type="Tau"      Loaded="0" Algo="selectedPatTaus" PtThreshold="20." EtaThreshold="2.5" RelIso="0.15" D0Cut="0.04" VertexMatchThr="1." TauLeadTrkPtCut="10."/>
+<s type="Vertex"   Loaded="1" Algo="offlinePrimaryVertices" VertexNdofThr="4" VertexZThr="24."   VertexRhoThr="2." />
+<s type="Jet" Loaded="1" Algo="pf" PtThreshold="30." EtaThreshold="2.5" />   
+</Selection>
