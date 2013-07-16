@@ -20,103 +20,120 @@ double Resolution::GetSigmaPtJet(const TLorentzVector& jet)
   {
     sigma.SetParameter(0,1.41584);
     sigma.SetParameter(1,0.209477);
-    sigma.SetParameter(2,0.588872);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.588872);
   }
   if (jet.Eta() > -4 && jet.Eta() <= -3.5)
   {
     sigma.SetParameter(0,1.65966);
     sigma.SetParameter(1,0.223683);
-    sigma.SetParameter(2,0.60873);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.60873);
   }
   if (jet.Eta() > -3.5 && jet.Eta() <= -3)
   {
     sigma.SetParameter(0,2.81978);
     sigma.SetParameter(1,0.272373);
-    sigma.SetParameter(2,0.579396);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.579396);
   }
   if (jet.Eta() > -3 && jet.Eta() <= -2.5)
   {
     sigma.SetParameter(0,2.56933);
     sigma.SetParameter(1,0.305802);
-    sigma.SetParameter(2,0.398929);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.398929);
   }
   if (jet.Eta() > -2.5 && jet.Eta() <= -2)
   {
     sigma.SetParameter(0,1.04792);
     sigma.SetParameter(1,0.466763);
-    sigma.SetParameter(2,0.193137);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.193137);
   }
   if (jet.Eta() > -2 && jet.Eta() <= -1.5)
   {
     sigma.SetParameter(0,-1.12329);
     sigma.SetParameter(1,0.657891);
-    sigma.SetParameter(2,0.139595);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.139595);
   }
   if (jet.Eta() > -1.5 && jet.Eta() <= -1)
   {
     sigma.SetParameter(0,-0.561649);
     sigma.SetParameter(1,0.420293);
-    sigma.SetParameter(2,0.392398);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.392398);
   }
   if (jet.Eta() > -1 && jet.Eta() <= -0.5)
   {
     sigma.SetParameter(0,-0.499735);
     sigma.SetParameter(1,0.336391);
-    sigma.SetParameter(2,0.430689);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.430689);
   }
   if (jet.Eta() > -0.5 && jet.Eta() <= 0.5)
   {
     sigma.SetParameter(0,-0.349206);
     sigma.SetParameter(1,0.297831);
-    sigma.SetParameter(2,0.471121);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.471121);
   }
   if (jet.Eta() > 0.5 && jet.Eta() <= 1)
   {
     sigma.SetParameter(0,-0.499735);
     sigma.SetParameter(1,0.336391);
-    sigma.SetParameter(2,0.430689);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.430689);
   }
   if (jet.Eta() > 1 && jet.Eta() <= 1.5)
   {
     sigma.SetParameter(0,-0.561649);
     sigma.SetParameter(1,0.420293);
-    sigma.SetParameter(2,0.392398);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.392398);
   }
   if (jet.Eta() > 4 && jet.Eta() <= 9.9)
   {
     sigma.SetParameter(0,1.41584);
     sigma.SetParameter(1,0.209477);
-    sigma.SetParameter(2,0.588872);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.588872);
   }
   if (jet.Eta() > 3.5 && jet.Eta() <= 4)
   {
     sigma.SetParameter(0,1.65966);
     sigma.SetParameter(1,0.223683);
-    sigma.SetParameter(2,0.60873);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.60873);
   }
   if (jet.Eta() > 3 && jet.Eta() <= 3.5)
   {
     sigma.SetParameter(0,2.81978);
     sigma.SetParameter(1,0.272373);
-    sigma.SetParameter(2,0.579396);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.579396);
   }
   if (jet.Eta() > 2.5 && jet.Eta() <= 3)
   {
     sigma.SetParameter(0,2.56933);
     sigma.SetParameter(1,0.305802);
-    sigma.SetParameter(2,0.398929);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.398929);
   }
   if (jet.Eta() > 2 && jet.Eta() <= 2.5)
   {
     sigma.SetParameter(0,1.04792);
     sigma.SetParameter(1,0.466763);
-    sigma.SetParameter(2,0.193137);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.193137);
   }
   if (jet.Eta() > 1.5 && jet.Eta() <= 2)
   {
     sigma.SetParameter(0,-1.12329);
     sigma.SetParameter(1,0.657891);
-    sigma.SetParameter(2,0.139595);
+    sigma.SetParameter(2,0);
+    sigma.SetParameter(3,0.139595);
   }
   
   return sigma.Eval(jet.Pt());

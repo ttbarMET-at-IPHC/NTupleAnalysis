@@ -23,8 +23,8 @@ CXXFLAGS	+= $(ROOTCFLAGS) -I./ -I../../IPHCDataFormat/ -I../../
 LIBS		= $(ROOTLIBS)  -lEG 
 GLIBS		= $(ROOTGLIBS)
 #------------------------------------------------------------------------------
-SOURCES		= $(wildcard Selection/src/*.cc BckgdEstimation/src/*.cc Plots/src/*.cc Measurements/src/*.cc Tools/src/*.cc tinyxml/*.cc EffEstimation/src/*cc EventReco/src/*.cc)
-HEADERS		= $(wildcard Selection/interface/*.h BckgdEstimation/interface/*.h Plots/interface/*.h Measurements/interface/*.h Tools/interface/*.h tinyxml/*.h EffEstimation/interface/*h EventReco/interface/*.h)
+SOURCES		= $(wildcard Selection/src/*.cc BckgdEstimation/src/*.cc Plots/src/*.cc Measurements/src/*.cc Tools/src/*.cc tinyxml/*.cc EffEstimation/src/*cc EventReco/src/*.cc JEC/src/*.cc)
+HEADERS		= $(wildcard Selection/interface/*.h BckgdEstimation/interface/*.h Plots/interface/*.h Measurements/interface/*.h Tools/interface/*.h tinyxml/*.h EffEstimation/interface/*h EventReco/interface/*.h JEC/interface/*.h)
 OBJECTS		= $(SOURCES:.$(SrcSuf)=.$(ObjSuf))
 DEPENDS		= $(SOURCES:.$(SrcSuf)=.d)
 SOBJECTS	= $(SOURCES:.$(SrcSuf)=.$(DllSuf))

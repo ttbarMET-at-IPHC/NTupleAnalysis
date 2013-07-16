@@ -34,8 +34,8 @@ class TTbarMetSelection: public Selection
   // -------------------------------------------------------------
  public:
 
-  void CorrectSUSYstopJets(std::vector<IPHCTree::NTJet> scaledJets) const;
-  void InitSUSYstopJEC(string tag);
+//  void CorrectSUSYstopJets(int DataType, std::vector<IPHCTree::NTJet> scaledJets) const;
+//  void InitSUSYstopJEC(string tag);
 
   //! Constructor without argument
   TTbarMetSelection();
@@ -284,9 +284,7 @@ class TTbarMetSelection: public Selection
   std::vector<IPHCTree::NTJet>      jetsAna;
   std::vector<IPHCTree::NTJet>      bjetsAna;
 
-  /*
-  FactorizedJetCorrector* JetCorrector;
-  */
+//  FactorizedJetCorrector* JetCorrector;
 };
 
 #endif

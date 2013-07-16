@@ -101,9 +101,9 @@ int TTbarMetSelection::doFullSelection (Dataset * dataset, string channelName, i
   step_trigger_e = passTriggerSelection(dataset, string("e") );
   step_trigger_mu = passTriggerSelection(dataset, string("mu") );
  
- // for signal -> force trigger // !!!!!!!!!!!!!!!!!!!!!!!!
-    step_trigger_e = true;
-    step_trigger_mu = true;
+ // Temprorary fix for trigger info missing in signal
+ //    step_trigger_e = true;
+ //    step_trigger_mu = true;
  
 
   bool step_rho = false;
@@ -147,7 +147,7 @@ int TTbarMetSelection::doFullSelection (Dataset * dataset, string channelName, i
 	   // #  Step 3       4 jets   #
 	   // ##########################
 
-                                                              //!! Switch to 3 jets to be able to run selection with 3 jets only when prducing plots
+                                                          //!! Switch to 3 jets to be able to run selection with 3 jets only in the plotter
 
        if (jetsAna.size () >= 3) {
   	 	step_jets = true;
@@ -173,7 +173,6 @@ int TTbarMetSelection::doFullSelection (Dataset * dataset, string channelName, i
             	btagDiscri.push_back (jetsAna[j].bTag[btag_algo]);
          	}
         }
-        //if ((int) bjetsAna.size () >= 2) step_bjets2 = true;
         if ((int) bjetsAna.size () >= NofBtagJets_)
 		{
 			step_bjets1 = true;
@@ -692,11 +691,10 @@ std::vector<IPHCTree::NTElectron> TTbarMetSelection::GetSUSYstopSelectedElectron
 // ----------------------------------------------------------------------------
 //   Jets selection
 // ----------------------------------------------------------------------------
-
+/*
 void TTbarMetSelection::InitSUSYstopJEC(string tag)
 {
-/*    // Create the JetCorrectorParameter objects, the order does not matter.
-    // YYYY is the first part of the txt files: usually the global tag from which they are retrieved
+    // Create the JetCorrectorParameter objects, the order does not matter.
     JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters((tag+"_L1FastJet_AK5PF.txt").c_str());
     JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters((tag+"_L2Relative_AK5PF.txt").c_str());
     JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters((tag+"_L3Absolute_AK5PF.txt").c_str());
@@ -710,30 +708,41 @@ void TTbarMetSelection::InitSUSYstopJEC(string tag)
     vPar->push_back(*ResJetPar);
 
     JetCorrector = new FactorizedJetCorrector(*vPar);
-*/
 }
 
-void TTbarMetSelection::CorrectSUSYstopJets(std::vector<IPHCTree::NTJet> scaledJets) const
+void TTbarMetSelection::CorrectSUSYstopJets(int DataType, std::vector<IPHCTree::NTJet> scaledJets) const
 {
-/*    
+    
     for(unsigned int i=0;i<scaledJets.size();i++)
     {
         JetCorrector->setJetEta(scaledJets[i].p4.Eta());
         JetCorrector->setJetPt(scaledJets[i].p4.Pt());
-        JetCorrector->setJetA(0.3);
+        JetCorrector->setJetA(scaledJets[i].others["jetArea"]);
         JetCorrector->setRho(getRho());
     
         vector<float> factors = JetCorrector->getSubCorrections();
-  
-        DEBUG_MSG  << "0) L1         = " << scaledJets[i].others["corr_L1FastJet"]
-                                                        << " L2  = " << scaledJets[i].others["corr_L2Relative"]
-                                                        << " L3  = " << scaledJets[i].others["corr_L3Absolute"]
-                                                        << endl;
-        DEBUG_MSG  << "1) factors[0] = " << factors[0]  << " [1] = " << factors[1]  << " [2] = " << factors[2] << " [3] = " << factors[3] << endl;
-    }
-    */
-}
 
+        TLorentzVector p4uncorr = scaledJets[i].p4 * scaledJets[i].others["corr_Uncorr"];
+
+        DEBUG_MSG << " i = " << i
+                << " ; pTuncorr = " << p4uncorr.Pt() 
+                << " ; pTold = " << scaledJets[i].p4.Pt()
+                << " ; pTnew = " << (p4uncorr * factors[2]).Pt()
+                << endl;
+
+       /* 
+        DEBUG_MSG  << "0) L1         = " << scaledJets[i].others["corr_L1FastJet"]
+                            << " L2  = " << scaledJets[i].others["corr_L2Relative"]
+                            << " L3  = " << scaledJets[i].others["corr_L3Absolute"]
+                                         << endl;
+
+        DEBUG_MSG  << "1) factors[0] = " << factors[0]  
+                            << " [1] = " << factors[1]
+                            << " [2] = " << factors[2]
+                            << " [3] = " << factors[3] << endl; */ /*
+    }
+}
+*/
 std::vector<IPHCTree::NTJet> TTbarMetSelection::GetSUSYstopSelectedJets(
             int DataType,
 			const std::vector<IPHCTree::NTMuon>& muon_cand,
@@ -745,15 +754,19 @@ std::vector<IPHCTree::NTJet> TTbarMetSelection::GetSUSYstopSelectedJets(
   // Get scaled jets
   std::vector<IPHCTree::NTJet> scaledJets;
   scaledJets = *GetPointer2Jets();
-  //CorrectSUSYstopJets(scaledJets);
+
+  // CorrectSUSYstopJets(DataType,scaledJets);
 
   for(unsigned int i=0;i<scaledJets.size();i++)
   {
 
 	// Loose ID
-                    // TEMPORARLY REMOVED THIS BECAUSE OF ISSUE WITH SIGNAL
-//	if (scaledJets[i].ID["LOOSE"] != 1.) continue;
+	if (scaledJets[i].ID["LOOSE"] != 1.) continue;
 	
+    // PU jet ID (the flag is called 'loose' but this is actually a tight ID
+    // TODO : fix this when this will be fixed in MiniTreeProducer
+	if (scaledJets[i].ID["PU_IDLoose53x"] != 1.) continue;
+
 	// Eta and Pt cuts
 	     if ((DataType == 0) && (fabs(scaledJets[i].p4.Eta()) >= 2.5 || scaledJets[i].p4.Pt() * scaledJets[i].others["corr_L3Absolute"]  < 30)) 
 		continue; 
