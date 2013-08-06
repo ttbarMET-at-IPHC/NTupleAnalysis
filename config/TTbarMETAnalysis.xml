@@ -51,153 +51,23 @@
 	 NofEvts="250000" 
  -->
 
-<!--
-<d  name="ttbarFullLept" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/TTJets_FullLeptMGDecay/*.root" />
-<d  name="ttbarHadronic" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/TTJets_HadronicMGDecays/*.root" />
-<d  name="ttbarSemilept" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/TTJets_SemiLeptMGDecays/*.root" />
-<d  name="W+2jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/W2JetsToLNu/*.root" />
-<d  name="W+3jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/W3JetsToLNu/*.root" />
-<d  name="W+4jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/W4JetsToLNu/*.root" />
-<d  name="SingleTbar_s" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/Tbar_s-channel/*.root" />
-<d  name="SingleTbar_t" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/Tbar_t/*.root" />
-<d  name="SingleTbar_tW" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/Tbar_tW-channel/*.root" />
-<d  name="SingleT_s" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/T_s-channel/*.root" />
-<d  name="SingleT_t" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/T_t-channel/*.root" />
-<d  name="SingleT_tW" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/T_tW-channel/*.root" />
-<d  name="WGstarToLNu2E" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/WGstarToLNu2E/*.root" />
-<d  name="WGstarToLNu2Mu" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/WGstarToLNu2Mu/*.root" />
-<d  name="WGstarToLNu2Tau" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/WGstarToLNu2Tau/*.root" />
-<d  name="WWJetsTo2L2Nu" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/WWJetsTo2L2Nu/*.root" />
-<d  name="WZJetsTo2L2Q" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/WZJetsTo2L2Q/*.root" />
-<d  name="ZZJetsTo2L2Q" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/ZZJetsTo2L2Q/*.root" />
-<d  name="ZZJetsTo4L" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/ZZJetsTo4L/*.root" />
-<d  name="WWG" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/WWGJets/*.root" />
-<d  name="WWW" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/WWWJets/*.root" />
-<d  name="WWZ" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/WWZNoGstarJets/*.root" />
-<d  name="WZZ" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/WZZNoGstarJets/*.root" />
-<d  name="DY4JetToLL" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/DY4JetsToLL_M-50/*.root" />
-<d  name="DYJetToLL" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/DYJetsToLL_M-50/*.root" />
-<d  name="TTW" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/TTWJets/*.root" />
-<d  name="TTWW" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/TTWWJets/*.root" />
-<d  name="TTZ" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/TTZJets/*.root" />
-<d  name="TBZ" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/echabert/TBZToLL_4F_TuneZ2star/*.root" />
--->
 
 <!--
-!-- ttbar --
-
-<d  name="ttbarFullLept" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/ttbarFullLept/*.root" />
-
-<d  name="ttbarSemiLept" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/ttbarSemiLept/*.root" />
-
-!-- W+jets --
-
+<d  name="ttbar" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/ttbar-v*/*.root" />
 <d  name="W2Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/W2Jets/*.root" />
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/W2Jets/*.root" />
 <d  name="W3Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/W3Jets/*.root" />
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/W3Jets/*.root" />
 <d  name="W4Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/W4Jets/*.root" />
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/W4Jets/*.root" />
 
-!-- Drell-yan --
-
-<d  name="DY4Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/DY4Jets/*.root" />
-
-!-- Singletop --
-
-<d  name="Singletop_Tbar_s" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/Singletop_Tbar_s/*.root" />
-<d  name="Singletop_Tbar_t" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/Singletop_Tbar_t/*.root" />
-<d  name="Singletop_T_s" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/Singletop_T_s/*.root" />
-<d  name="Singletop_T_t" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/Singletop_T_t/*.root" />
-<d  name="Singletop_T_tW" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/Singletop_T_tW/*.root" />
-
-!-- TTV --
-
-<d  name="TTW" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/TTWJets/*.root" />
-<d  name="TTZ" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/TTZJets/*.root" />
-<d  name="TTWW" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/TTWWJets/*.root" />
-
-<d  name="TBZ" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/TBZToLL/*.root" />
-
-!-- diboson --
-
-<d  name="WWJetsTo2L2Nu" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/WWJetsTo2L2Nu/*.root" />
-<d  name="WGstarToLNu2E" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/WGstarToLNu2E/*.root" />
-<d  name="WGstarToLNu2Mu" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/WGstarToLNu2Mu/*.root" />
-<d  name="WGstarToLNu2Tau" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/WGstarToLNu2Tau/*.root" />
-<d  name="WZJetsTo2L2Q" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/WZJetsTo2L2Q/*.root" />
-
-!-- triboson --
-
-<d  name="WWWJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/WWWJets/*.root" />
-<d  name="WWZNoGstarJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/WWZNoGstarJets/*.root" />
-<d  name="WWGJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/WWGJets/*.root" />
-<d  name="ZZZNoGstarJets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/ZZZNoGstarJets/*.root" />
-
-
-!-- signal --
 <d  name="signal" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/harvest/signal/*/*.root" />
-
--->
-<!--
-<d  name="ttbarSemiLept" add="1" isData="0" NofEvts="20000" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/ttbarSemiLept/*.root" />
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/T2tt_*/*.root" />
 -->
 
-<d  name="ttbarFullLept" add="1" isData="0" NofEvts="200000" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/tauVetoValidation_charlie/store/skimmed/ttbarFullLept/*.root" />
-
+<d  name="relvalSynchro" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/synchro/our*.root" />
 
 </Datasets>
 
@@ -268,9 +138,10 @@
 <s 
 	type="HeavyTagJet" 
 	Loaded="1" 
-	Algo="AK8Trimmed"
+	Algo="CA8Pruned"
 />
 
 </Selection>
+
 
 
