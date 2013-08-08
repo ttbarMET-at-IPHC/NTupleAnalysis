@@ -172,9 +172,9 @@ double StopAnaReco::GetK(const double& Sigma,
 
 TH1F* StopAnaReco::GetHistoAdd(std::vector<TH1F*>& HistoVect)
 {
-	for(int k=0;k<HistoVect.size();k++)
+	for (unsigned int k=0;k<HistoVect.size();k++)
 	{
-		if(k!=0) HistoVect[0]->Add(HistoVect[k]);
+		if (k!=0) HistoVect[0]->Add(HistoVect[k]);
 	}
 	return HistoVect[0];
 }
@@ -195,7 +195,7 @@ TH1F* StopAnaReco::GetHistoNorm(const std::vector<TH1F*>& HistoVect,
 	if(HistoVect.size()==KVect.size())
 	{
 		//cout<<"GetHistoNorm HistoVect.size()= "<<HistoVect.size()<<endl;
-		for(int k=0;k<HistoVect.size();k++)
+		for(unsigned int k=0;k<HistoVect.size();k++)
 		{
 			HistoVect[k]->Scale(KVect[k]);
 			if(k!=0) HistoVect[0]->Add(HistoVect[k]);

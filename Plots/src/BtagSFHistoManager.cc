@@ -114,7 +114,6 @@ void BtagSFHistoManager::PlotTGraph(TDirectory* dir){
 
        const int maxi=20;
        const int maxj=5; // 5 Btag selections considered 
-       int ii=-1;
        int jj=-1;
        const int maxbin=20;
        float sfb[maxbin];
@@ -124,14 +123,11 @@ void BtagSFHistoManager::PlotTGraph(TDirectory* dir){
        float eff[maxi][maxj][maxbin][maxbin];
        float efferr[maxi][maxj][maxbin][maxbin];
        float tot_check[maxi][maxbin][maxbin];
-       for (unsigned int i1=0; i1<maxi; i1++) {
-         for (int k1=0; k1<maxbin; k1++) {
-            for (int k2=0; k2<maxbin; k2++) {
-               tot_check[i1][k1][k2]=0;
-            }
-         }
-       }
-
+       for (int i1=0; i1<maxi; i1++) 
+       for (int k1=0; k1<maxbin; k1++) 
+       for (int k2=0; k2<maxbin; k2++)
+           tot_check[i1][k1][k2]=0;
+       
        TH2F *h_support = new TH2F("h_support","Btag Selection vs SF_b",10,0.5,1.5,10,0.,1.2);
        h_support->SetStats(0);
 
@@ -160,7 +156,6 @@ void BtagSFHistoManager::PlotTGraph(TDirectory* dir){
                   for (int i=0; i<h1->GetNbinsX(); i++) {
                      sfb[indexb]= atof(h1->GetXaxis()->GetBinLabel(i+1));
                      cout << indexb << " " <<  sfb[indexb]  << endl;
-                     if (sfb[indexb]==1.) ii=indexb;
                      indexb++;
                   }
                   cout << " ======SFl===== " << endl;

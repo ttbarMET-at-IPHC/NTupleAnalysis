@@ -202,11 +202,13 @@ void GeneralMMEstimation::CountNSel(const SSDiLeptonSelection & sel, Dataset dat
 
    // Apply selections
    for (unsigned int iso_index = 0; iso_index<4; iso_index++) {
-       vector<NTJet> SelectedJetsForMM; bool LepPairForMM[4]; vector<NTElectron> candElecForMM; vector<NTMuon> candMuonForMM;
+       vector<NTJet> SelectedJetsForMM; 
+       //bool LepPairForMM[4]; 
+       vector<NTElectron> candElecForMM; vector<NTMuon> candMuonForMM;
        SSDiLeptonSelection sel_aux(sel);
        selStepMM[iso_index] = sel_aux.doFullSelection( &(dataset), channelName, false, true, GetIsolations().iso1[iso_index],GetIsolations().iso2[iso_index]);         
        // Be careful if inverted or not (at the moment pairing is applied before isolation)
-       LepPairForMM[iso_index] = sel_aux.GetLeptonPairForMM(candMuonForMM, candElecForMM, CandTypeForMM[iso_index], GetIsolations().iso1[iso_index],GetIsolations().iso2[iso_index]);
+       //LepPairForMM[iso_index] = sel_aux.GetLeptonPairForMM(candMuonForMM, candElecForMM, CandTypeForMM[iso_index], GetIsolations().iso1[iso_index],GetIsolations().iso2[iso_index]);
        SelectedJetsForMM = sel_aux.GetSelectedJets(candMuonForMM, candElecForMM);
        njets[iso_index] = SelectedJetsForMM.size(); //if(iso_index == 3){njets[3]=SelectedJetsForMM.size(); njets[2]=SelectedJetsForMM.size(); njets[1]=SelectedJetsForMM.size(); njets[0]=SelectedJetsForMM.size();}
    }

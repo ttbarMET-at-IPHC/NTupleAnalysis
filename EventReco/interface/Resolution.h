@@ -78,7 +78,7 @@ class Resolution
 	//methode chi2
 	vector<float> btag;
 	vector<float> sigma_jets;	
-	int n_jets;
+	unsigned int n_jets;
 	vector<int> v_i, v_j;
 	vector<double> v_k1, v_k2;
 	TLorentzVector hadW;
@@ -88,7 +88,7 @@ class Resolution
 	int n_btag;
 	double chi2min;
 	double pt_b;
-	int k, l;
+	unsigned int k, l;
 	int nwb;
 	double pt_w1, pt_w2;
 	double massW;

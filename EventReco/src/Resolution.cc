@@ -176,8 +176,8 @@ double Resolution::GetChi2(const std::vector<IPHCTree::NTJet>& jets)
   //consider at least 3 jets
   if (n_jets<3) return 99999.;
 
-  for ( int i=0; i<n_jets; ++i )
-  for ( int j=i+1; j<n_jets; ++j )
+  for ( unsigned int i=0; i<n_jets; ++i )
+  for ( unsigned int j=i+1; j<n_jets; ++j )
   {
       minimizer=minimizer_void;
 
@@ -198,7 +198,7 @@ double Resolution::GetChi2(const std::vector<IPHCTree::NTJet>& jets)
       minimizer.SetParameter(6 , "m22"    , jets[j].p4.M2() , 1 , 0 , 0);
       minimizer.SetParameter(7 , "m02"    , hadW.M2()    , 1 , 0 , 0);
 
-      for (unsigned int k = 1; k < 8; k++)
+      for (k = 1; k < 8; k++)
         minimizer.FixParameter(k);
 
       minimizer.ExecuteCommand("SIMPLEX", 0, 0);
@@ -229,13 +229,13 @@ double Resolution::GetChi2(const std::vector<IPHCTree::NTJet>& jets)
 
   //Apply b-consistency requirement
   n_btag = 0;
-  for(int i=0;i<n_jets;i++)
+  for(unsigned int i=0;i<n_jets;i++)
     if(btag.at(i)>BTAG_MED) n_btag++;
 
   chi2min = 99999.;
 
   //consider b-jet in leading 3 jets
-  for(int b=0;b<n_jets;++b)
+  for(unsigned int b=0;b<n_jets;++b)
   {    
     //if not tagged, consider only 3 leading jets
     if( btag.at(b)<BTAG_MED && b>2 ) continue;
