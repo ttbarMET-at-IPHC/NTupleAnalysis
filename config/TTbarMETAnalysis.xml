@@ -52,22 +52,21 @@
  -->
 
 
-<!--
 <d  name="ttbar" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/ttbar-v*/*.root" />
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/ttbar-v*/*.root" />
 <d  name="W2Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/W2Jets/*.root" />
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/W2Jets/*.root" />
 <d  name="W3Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/W3Jets/*.root" />
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/W3Jets/*.root" />
 <d  name="W4Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/W4Jets/*.root" />
-
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/W4Jets/*.root" />
 <d  name="signal" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/T2tt_*/*.root" />
--->
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/T2tt_*/*.root" />
 
+<!--
 <d  name="relvalSynchro" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/synchro/our*.root" />
+-->
 
 </Datasets>
 
