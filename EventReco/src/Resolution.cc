@@ -16,7 +16,7 @@ Resolution::~Resolution() {}
 
 // Compute sigma for a given jet
 
-double Resolution::GetSigmaPtJet(const TLorentzVector& jet)
+double Resolution::GetSigmaJet(const TLorentzVector& jet)
 {
   TF1 sigma("sigma","sqrt(((TMath::Sign(1,[0])*sq([0]/x))+(sq([1])*(x^([3]-1))))+sq([2]))",0,10);
 
@@ -80,15 +80,41 @@ double Resolution::GetSigmaPtJet(const TLorentzVector& jet)
   return sigma.Eval(jet.Pt());
 }
 
-double Resolution::GetChi2(const std::vector<IPHCTree::NTJet>& jets)
+// This is a Data/MC Ratio, so it has to be applied on MC
+double Resolution::GetSigmaScaleFactor(double eta)
+{
+
+    // Taken from JetResolution TWiki page on 2 sep. 2013
+         if (abs(eta) <= 0.5) return 1.052;
+    else if (abs(eta) <= 1.1) return 1.057;
+    else if (abs(eta) <= 1.7) return 1.096;
+    else if (abs(eta) <= 2.3) return 1.134;
+    else if (abs(eta) <= 5.0) return 1.288;
+
+    // No SF given after 5.0 
+    //    => returning 1.0 as default value.
+    // Shouldn't be a problem as it's unlikely 
+    // that a jet with |eta|>5.0 get selected anyway.
+    else return 1.0;
+
+}
+
+double Resolution::GetChi2(const std::vector<IPHCTree::NTJet>& jets, bool runningOnData)
 {
   vector<int> v_i, v_j;
   vector<double> v_k1, v_k2;
 
   // Get the sigmas
-  vector<float> sigmas;	
+  vector<float> sigmas;
+
   for(unsigned int i=0; i<jets.size(); i++)
-    sigmas.push_back(Resolution::GetSigmaPtJet(jets[i].p4));
+  {
+    // Apply scale factors only for MC
+    if (!runningOnData)
+        sigmas.push_back(GetSigmaJet(jets[i].p4) * GetSigmaScaleFactor(jets[i].p4.Eta()));
+    else
+        sigmas.push_back(GetSigmaJet(jets[i].p4));
+  }
 
   // Get the btags
   vector<float> btag;

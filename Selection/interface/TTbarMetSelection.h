@@ -200,10 +200,10 @@ class TTbarMetSelection: public Selection
       return HT_onTheSideOfMET / HT_total;
   }
       
-  float HadronicChi2() const
+  float HadronicChi2(bool runningOnData) const
   {
     Resolution Chi2;
-    float value = Chi2.GetChi2(GetJetsForAna());
+    float value = Chi2.GetChi2(GetJetsForAna(),runningOnData);
     return value;
   }
 

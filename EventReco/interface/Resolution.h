@@ -41,9 +41,9 @@ class Resolution
     //Destructor
     ~Resolution();
 
-    static double GetSigmaPtJet(const TLorentzVector& jet);
-
-    double GetChi2(const std::vector<IPHCTree::NTJet>& jets);
+    static double GetSigmaJet(const TLorentzVector& jet);
+    static double GetSigmaScaleFactor(double eta);
+    double GetChi2(const std::vector<IPHCTree::NTJet>& jets, bool runningOnMonteCarlo);
 
     static double fc2 (double c1, double m12, double m22, double m02);
 
