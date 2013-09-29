@@ -131,12 +131,12 @@ int TTbarMetSelection::doFullSelection (Dataset * dataset, string channelName, i
        float lepton_charge;
        if (muonsAna.size()==1) 
        {
-           lepton_p = muonsAna[0].p4;
+           lepton_p      = muonsAna[0].p4;
            lepton_charge = muonsAna[0].charge;
        }
        else
        {
-           lepton_p = electronsAna[0].p4;
+           lepton_p      = electronsAna[0].p4;
            lepton_charge = electronsAna[0].charge;
        }
 
@@ -249,7 +249,8 @@ bool TTbarMetSelection::GetSUSYstopIsolatedTrackVeto(TLorentzVector lepton_p, fl
         {
             if ((vetotracks[i].p4.Pt() > 10)
             && (fabs(vetotracks[i].dz_firstGoodVertex) < 0.05)
-            && (vetotracks[i].trackIso / vetotracks[i].p4.Pt() < 0.1))    
+            && (vetotracks[i].trackIso / vetotracks[i].p4.Pt() < 0.1)
+            && (lepton_charge != vetotracks[i].others["charge_fromID"]))
             passCuts = true;
         }
 
@@ -259,8 +260,6 @@ bool TTbarMetSelection::GetSUSYstopIsolatedTrackVeto(TLorentzVector lepton_p, fl
         // + apply opposite charge req.
         TLorentzVector vetoTrack_p = vetotracks[i].p4;
         if (lepton_p.DeltaR(vetoTrack_p) < 0.1) continue;
-        if (((abs(pfCandId) != 11) && (abs(pfCandId) != 13))
-        && (lepton_charge == vetotracks[i].others["charge_fromID"])) continue;
 
         return false;
     }
@@ -529,9 +528,6 @@ std::vector<IPHCTree::NTMuon> TTbarMetSelection::GetSUSYstopSelectedMuons() cons
     float absIso       = pfIsoCharged + max(0., pfIsoNeutral + pfIsoPhoton- 0.5*pfIsoPU); 
     if (absIso > 5) continue;
 
-    // Relative isolation
-    //if (absIso / muons[i].p4.Pt() > 0.15) continue;
-
     selectedMuons.push_back(muons[i]);
   }
   
@@ -595,21 +591,21 @@ std::vector<IPHCTree::NTElectron> TTbarMetSelection::GetSUSYstopGoodElectrons(st
       if (overE_m_overPin >= 0.05) continue;
 
       // Rel Iso
-      float chargedIso = localElectrons[i].isolation["RA4Charg"];
-      float photonIso = localElectrons[i].isolation["RA4Photo"];
-      float neutralIso = localElectrons[i].isolation["RA4Neutr"];
-      float rho_relIso = localElectrons[i].isolation["rho"];
+      float chargedIso  = localElectrons[i].isolation["RA4Charg"];
+      float photonIso   = localElectrons[i].isolation["RA4Photo"];
+      float neutralIso  = localElectrons[i].isolation["RA4Neutr"];
+      float rho_relIso  = localElectrons[i].isolation["rho"];
       float Aeff_relIso = localElectrons[i].isolation["Aeff"];
       float relIso = (chargedIso + max((float) 0.0, (float) (photonIso + neutralIso - rho_relIso * Aeff_relIso)))/localElectrons[i].p4.Pt();
       
       if (localElectrons[i].isEB)
-      if (relIso > 0.15) continue;
+        if (relIso > 0.15) continue;
 
       if ((localElectrons[i].isEE) && (localElectrons[i].p4.Pt() >= 20))
-      if (relIso > 0.15) continue;
+        if (relIso > 0.15) continue;
 
       if ((localElectrons[i].isEE) && (localElectrons[i].p4.Pt() < 20))
-      if (relIso > 0.10) continue;
+        if (relIso > 0.10) continue;
 
       // Conversion rejection
       if (localElectrons[i].passConversionVeto == false) continue;
@@ -739,19 +735,11 @@ std::vector<IPHCTree::NTJet> TTbarMetSelection::GetSUSYstopSelectedJets(
   for(unsigned int i=0;i<scaledJets.size();i++)
   {
     
-    cout << "jet i = " << i << " ; Pt = " << scaledJets[i].p4.Pt() * scaledJets[i].others["corr_L3Absolute"] << " ; Eta = " << scaledJets[i].p4.Eta() << endl;
+    //cout << "jet i = " << i << " ; Pt = " << scaledJets[i].p4.Pt() * scaledJets[i].others["corr_L3Absolute"] << " ; Eta = " << scaledJets[i].p4.Eta() << endl;
 
     // Loose ID
     if (scaledJets[i].ID["LOOSE"] != 1.) continue;
-    cout << "  > pass loose jet ID" << endl;
-
-    cout << "  > PU MVA 5x  = " << scaledJets[i].ID["PU_MVAdiscr5x"]  << endl;
-    cout << "  > PU MVA 53x = " << scaledJets[i].ID["PU_MVAdiscr53x"] << endl;
- 
-    // PU jet ID (the flag is called 'loose' but this is actually a tight ID
-    // TODO : fix this when this will be fixed in MiniTreeProducer
-    if (scaledJets[i].ID["PU_IDLoose5x"] != 1.) continue;
-    cout << "  > pass PU jet ID" << endl;
+    if (scaledJets[i].ID["PU_IDTight5x"] != 1.) continue;
 
     // Eta and Pt cuts
          if ((DataType == 0) && (fabs(scaledJets[i].p4.Eta()) >= 2.4 || scaledJets[i].p4.Pt() * scaledJets[i].others["corr_L3Absolute"]  < 30)) 
@@ -759,7 +747,7 @@ std::vector<IPHCTree::NTJet> TTbarMetSelection::GetSUSYstopSelectedJets(
     else if ((DataType == 1) && (fabs(scaledJets[i].p4.Eta()) >= 2.4 || scaledJets[i].p4.Pt() * scaledJets[i].others["corr_L2L3Residual"]  < 30)) 
         continue;
     
-    cout << "  > pass Pt/Eta cuts" << endl;
+    //cout << "  > pass Pt/Eta cuts" << endl;
 
     // Overlap removal
     double deltaRmu = 10000;
@@ -779,8 +767,8 @@ std::vector<IPHCTree::NTJet> TTbarMetSelection::GetSUSYstopSelectedJets(
     
     if( deltaRmu > 0.4  && deltaRel > 0.4)
     {
-        cout << "  > pass deltaR" << endl;
-        cout << "  > OK !" << endl;
+        //cout << "  > pass deltaR" << endl;
+        //cout << "  > OK !" << endl;
                          selectedJets.push_back(scaledJets[i]);
      }
   }
