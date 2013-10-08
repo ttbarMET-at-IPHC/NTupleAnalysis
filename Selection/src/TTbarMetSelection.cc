@@ -368,9 +368,6 @@ int TTbarMetSelection::FillTable (SelectionTable & selTable,
   return sel;
 }
 
-
-
-
 bool TTbarMetSelection::passTriggerSelection (Dataset * dataset, string channelName)
 {
 
@@ -430,6 +427,7 @@ bool TTbarMetSelection::passTriggerSelection (Dataset * dataset, string channelN
   return false;
 
 }
+
 
 
 int TTbarMetSelection::GetbtagAlgo () const

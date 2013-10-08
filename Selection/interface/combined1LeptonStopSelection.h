@@ -71,9 +71,10 @@ class combined1LeptonStopSelection: public Selection
 				const std::vector<IPHCTree::NTMuon>& muon_cand,
     			const std::vector<IPHCTree::NTElectron>& elec_cand) const;
 
-  bool doFullSelection(Dataset* dataset, pair<bool,bool>* triggerME = 0);
-  bool passTriggerSelection(Dataset* dataset, string channelName = string(""));
-     
+  bool doFullSelection(Dataset* dataset);
+  bool checkPathHasBeenFired(string path);
+  bool passTrigger(string channel);
+
   int GetbtagAlgo() const;
   float GetbtagDiscriCut() const;
   int GetNofBtagJetsCut() const; 
@@ -101,6 +102,15 @@ class combined1LeptonStopSelection: public Selection
   }
   float Met() const            { return the_met.Pt(); }
 
+  float HT() const      
+  { 
+      float HT_ = 0;
+      for (unsigned int i = 0 ; i < jetsAna.size() ; i++)
+          HT_ += jetsAna[i].p4.Pt();
+
+      return HT_;
+  }
+
   float HT_ratio() const      
   { 
       float HT_onTheSideOfMET = 0;
@@ -126,9 +136,6 @@ class combined1LeptonStopSelection: public Selection
   float MT2W() const
   {
     Mt2Com_bisect Mt2;
-   
-    
-
     float value = Mt2.calculateMT2w(GetJetsForAna(),
                                     GetBJetsForAna(),
                                     the_leading_lepton,
@@ -157,7 +164,54 @@ class combined1LeptonStopSelection: public Selection
         return abs(the_met.DeltaPhi(secondLeadingJet));
   }
 
-    
+  float M3b()
+  {
+      TLorentzVector sum;
+      if(jetsAna.size() == 3)
+      {
+          sum = jetsAna[0].p4 + jetsAna[1].p4 + jetsAna[2].p4;
+      }
+      else
+      {
+          // check which jet is closest to lepton, then take other 3
+          double dphimin = 99.;
+          int index_closest_jet = -1;
+          for(int i=0; i < 4; i++)
+          {
+              double dphi = the_leading_lepton.DeltaPhi(jetsAna[i].p4);
+              if (dphi < dphimin)
+              {
+                  dphimin = dphi;
+                  index_closest_jet = i;
+              }
+          }
+
+          for(int i=0; i<4; i++)
+          {
+              if(i!=index_closest_jet)
+                  sum = sum + jetsAna[i].p4;
+          }
+
+      }    
+
+      return sum.M();    
+
+  }
+
+
+
+
+
+
+  TLorentzVector getTheLeadingLepton()      { return the_leading_lepton; };
+  int            getTheLeadingLeptonPDGId() { return the_leading_lepton_pdgid; };
+  TLorentzVector getTheSecondLepton()       { return the_second_lepton; };
+  int            getTheSecondLeptonPDGId()  { return the_second_lepton_pdgid; };
+
+
+  int getTheNumberOfSelectedLeptons() { return numberOfSelectedLeptons; }
+
+
   // -------------------------------------------------------------
   //                        data members
   // -------------------------------------------------------------
@@ -182,6 +236,7 @@ class combined1LeptonStopSelection: public Selection
   std::vector<IPHCTree::NTJet>      bjetsAna;
 
   //FactorizedJetCorrector* JetCorrector;
+  int numberOfSelectedLeptons;
 };
 
 #endif

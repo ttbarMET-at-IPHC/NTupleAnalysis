@@ -141,8 +141,9 @@ class TTbarMetSelection: public Selection
 	  bool applyJES = false, float JESParam = 1., bool applyEES = false, float EESParam = 1., bool applyMES = false, float MESParam = 1., bool applyJER = false, float JERFactor = 0., bool applyMETS = false, float METScale = 1.);
 
 
-  bool passTriggerSelection(Dataset* dataset, string channelName = string(""));
-     
+  bool passTriggerSelection(Dataset * dataset, string channelName);
+  
+
   int GetbtagAlgo() const;
   float GetbtagDiscriCut() const;
   int GetNofBtagJetsCut() const; 

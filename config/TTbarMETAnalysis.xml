@@ -50,10 +50,9 @@
 		- NofPSEvts instead of NofEvts 						 
 	 NofEvts="250000" 
  -->
-
-
 <d  name="ttbar" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/ttbar-v*/*.root" />
+<!--
 <d  name="W2Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/W2Jets/*.root" />
 <d  name="W3Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
@@ -62,6 +61,7 @@
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/W4Jets/*.root" />
 <d  name="signal" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/T2tt_*/*.root" />
+-->
 
 <!--
 <d  name="relvalSynchro" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."

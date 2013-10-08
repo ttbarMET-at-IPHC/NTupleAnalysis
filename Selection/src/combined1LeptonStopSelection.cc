@@ -10,7 +10,7 @@ combined1LeptonStopSelection::combined1LeptonStopSelection ()
 {
 }
 
-bool combined1LeptonStopSelection::doFullSelection (Dataset * dataset, pair<bool,bool>* triggerME)
+bool combined1LeptonStopSelection::doFullSelection(Dataset * dataset)
 {
  
   // Clear object collections
@@ -37,30 +37,38 @@ bool combined1LeptonStopSelection::doFullSelection (Dataset * dataset, pair<bool
   // # + check rho value < 40 #
   // ##########################
   
-  bool step_trigger_e  = passTriggerSelection(dataset, string("e") );
-  bool step_trigger_mu = passTriggerSelection(dataset, string("mu") );
+  bool trigger_singleElec = passTrigger("singleElec");
+  bool trigger_singleMuon = passTrigger("singleMuon");
+  bool trigger_doubleElec = passTrigger("doubleElec");
+  bool trigger_doubleMuon = passTrigger("doubleMuon");
+  bool trigger_elecMuon   = passTrigger("muonElec");
 
   bool step_rho = false;
   if ((getRho() >= 0.0) && (getRho() < 40.0)) step_rho = true;
 
-  // Check if trigger is OK
   bool step_trigger    = false;
-  if ((step_trigger_e || step_trigger_mu) && (step_rho)) step_trigger = true;
-
-  if (step_trigger && step_rho) 
+  if (dataset->isData())
   {
+      if (trigger_singleElec || trigger_singleMuon || trigger_doubleElec || trigger_doubleMuon || trigger_elecMuon)
+        step_trigger = step_rho;
+  }
+  else
+  {
+      step_trigger = step_rho;
+  }
 
-      if (triggerME != 0)
-      {
-          *triggerME = std::make_pair(step_trigger_mu,step_trigger_e);
-      }
+
+  if (step_trigger) 
+  {
 
       // ####################
       // #  Step 2   Lepton #
       // ####################
   
-      if ((electronsAna.size() >= 1 || muonsAna.size() >= 1) && (step_trigger_e || step_trigger_mu))
+      if ((electronsAna.size() >= 1 || muonsAna.size() >= 1))
       {
+
+          numberOfSelectedLeptons = electronsAna.size() + muonsAna.size();
 
           // ##########################
           // #  Step 3       3 jets   #
@@ -184,12 +192,12 @@ void combined1LeptonStopSelection::FillKinematicP4(
           if (the_leading_lepton.Pt()  < muon_kin[i].p4.Pt()) 
           {
               the_leading_lepton       = muon_kin[i].p4;
-              the_leading_lepton_pdgid = muon_kin[i].charge * 13;
+              the_leading_lepton_pdgid = muon_kin[i].charge * (-13);
           }
           else if (the_second_lepton.Pt()  < muon_kin[i].p4.Pt())
           {
               the_second_lepton       = muon_kin[i].p4;
-              the_second_lepton_pdgid = muon_kin[i].charge * 13;
+              the_second_lepton_pdgid = muon_kin[i].charge * (-13);
           }
       }
       for (unsigned int i = 0 ; i < elec_kin.size() ; i++)
@@ -197,12 +205,12 @@ void combined1LeptonStopSelection::FillKinematicP4(
           if (the_leading_lepton.Pt()  < elec_kin[i].p4.Pt()) 
           {
               the_leading_lepton       = elec_kin[i].p4;
-              the_leading_lepton_pdgid = elec_kin[i].charge * 11;
+              the_leading_lepton_pdgid = elec_kin[i].charge * (-11);
           }
           else if (the_second_lepton.Pt() < elec_kin[i].p4.Pt())
           {
               the_second_lepton       = elec_kin[i].p4;
-              the_second_lepton_pdgid = elec_kin[i].charge * 11;
+              the_second_lepton_pdgid = elec_kin[i].charge * (-11);
           }
       }
 
@@ -250,63 +258,66 @@ void combined1LeptonStopSelection::FillKinematicP4(
 }
 
 
-bool combined1LeptonStopSelection::passTriggerSelection (Dataset * dataset, string channelName)
+bool combined1LeptonStopSelection::passTrigger(string channel)
 {
+    vector<string> path;
 
-  bool passEl = false;
-  bool passMu = false;
+    if (channel == "singleMuon") 
+    { 
+        path.push_back("HLT_IsoMu24_v*"); 
+        path.push_back("HLT_IsoMu24_eta2p1_v*"); 
+    }
+    if (channel == "singleElec") 
+    { 
+        path.push_back("HLT_Ele27_WP80_v*"); 
+    }
+    if (channel == "crossMuon" ) 
+    { 
+        path.push_back("HLT_IsoMu17_eta2p1_TriCentralPFJet30_v*"); 
+        path.push_back("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v*");
+        path.push_back("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_v*"); 
+    }
+    if (channel == "doubleMuon") 
+    { 
+        path.push_back("HLT_Mu17_Mu8_v*"); 
+    }
+    if (channel == "doubleElec")
+    { 
+        path.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v*"); 
+    }
+    if (channel == "muonElec"  ) 
+    { 
+        path.push_back("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v*"); 
+        path.push_back("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL*"); 
+    }
 
-  string datasetName = dataset->Name ();
- 
-    // ######################################
-    // #   According to CMS AN-2012/379     #
-    // ######################################
+    for (unsigned int i = 0 ; i < path.size() ; i++)
+    {
+        if (checkPathHasBeenFired(path[i])) return true;
+    }
 
-            // #########################
-            // #        Muon           #
-            // #########################
+    return false;
 
-            std::vector<IPHCTree::NTTriggerPathType> myPaths0;
-            GetPointer2Trigger()->GetSubTable("HLT_IsoMu24_v*",myPaths0);
-            for (unsigned int i=0;i<myPaths0.size();i++) {
-              if (myPaths0[i].fired==1) {
-                passMu=true;
-                if (myPaths0[i].prescale>1) cout << " warning TRIGGER " << myPaths0[i].name 
-                                                 << " is PRESCALED with a factor " << myPaths0[i].prescale 
-                                                 << endl;
-              }
-            }
+}
 
-            std::vector<IPHCTree::NTTriggerPathType> myPaths1;
-            GetPointer2Trigger()->GetSubTable("HLT_IsoMu24_eta2p1_v*",myPaths1);
-            for (unsigned int i=0;i<myPaths1.size();i++) {
-              if (myPaths1[i].fired==1) {
-                passMu=true;
-                if (myPaths1[i].prescale>1) cout << " warning TRIGGER " << myPaths1[i].name 
-                                                 << " is PRESCALED with a factor " << myPaths1[i].prescale 
-                                                 << endl;
-              }
-            }
 
-            // #########################
-            // #      Electron         #
-            // #########################
+bool combined1LeptonStopSelection::checkPathHasBeenFired(string path)
+{
+    std::vector<IPHCTree::NTTriggerPathType> myPaths;
+    GetPointer2Trigger()->GetSubTable(path.c_str(),myPaths);
+    for (unsigned int i=0;i<myPaths.size();i++) 
+    {
+        if (myPaths[i].fired==1) 
+        {
+            if (myPaths[i].prescale>1) cout << " warning TRIGGER " << myPaths[i].name 
+                << " is PRESCALED with a factor " << myPaths[i].prescale 
+                    << endl;
 
-            std::vector<IPHCTree::NTTriggerPathType> myPaths2;
-            GetPointer2Trigger()->GetSubTable("HLT_Ele27_WP80_v*",myPaths2);
-            for (unsigned int i=0;i<myPaths2.size();i++) {
-                if (myPaths2[i].fired==1) {
-                passEl=true;
-                if (myPaths2[i].prescale>1) cout << " warning TRIGGER " << myPaths2[i].name 
-                                                 << " is PRESCALED with a factor " << myPaths2[i].prescale 
-                                                 << endl;
-              }
-            }
-            
-  if (channelName.find("e") !=string::npos) return passEl; 
-  if (channelName.find("mu")!=string::npos) return passMu; 
-  
-  return false;
+            return true;
+        }
+    }
+
+    return false;
 
 }
 
@@ -378,7 +389,7 @@ std::vector<IPHCTree::NTMuon> combined1LeptonStopSelection::GetSUSYstopSelectedM
   {
     
     // Pt and Eta
-    if (muons[i].p4.Pt() < 25)   continue;
+    if (muons[i].p4.Pt()  < 20) continue;
     if (muons[i].p4.Eta() > 2.1) continue;
 
     // Reco - PF matching
