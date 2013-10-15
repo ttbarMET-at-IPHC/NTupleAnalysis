@@ -117,9 +117,15 @@ double Resolution::GetChi2(const std::vector<IPHCTree::NTJet>& jets, bool runnin
   }
 
   // Get the btags
+  string CSVtag;
+  if (runningOnData)
+    CSVtag = "combinedSecondaryVertexBJetTags";
+  else
+    CSVtag = "combinedSecondaryVertexBJetTags_reshapeNominal";
+
   vector<float> btag;
   for (unsigned int i = 0; i < jets.size(); i++)
-    btag.push_back(jets[i].bTag["combinedSecondaryVertexBJetTags"]);
+    btag.push_back(jets[i].bTag[CSVtag]);
 
   assert(jets.size() == sigmas.size());
   assert(jets.size() == btag.size());

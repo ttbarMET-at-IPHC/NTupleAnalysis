@@ -9,6 +9,9 @@
 #include "EventReco/interface/StopAnaReco.h"
 #include "EventReco/interface/Resolution.h"
 #include "EventReco/interface/Mt2Com_bisect.h"
+#include "BTagReshaping/interface/BTagReshaping.h"
+
+#include "JetCorrections/interface/JetCorrectionUncertainty.h"
 
 // system include files
 #include <memory>
@@ -18,225 +21,273 @@
 class combined1LeptonStopSelection: public Selection
 {
 
-  // -------------------------------------------------------------
-  //                       method members
-  // -------------------------------------------------------------
- public:
+    // -------------------------------------------------------------
+    //                       method members
+    // -------------------------------------------------------------
+    public:
 
-  //! Constructor without argument
-  combined1LeptonStopSelection();
+        //! Constructor without argument
+        combined1LeptonStopSelection();
 
-  //! Copy constructor
-  combined1LeptonStopSelection(const combined1LeptonStopSelection &);
+        //! Copy constructor
+        combined1LeptonStopSelection(const combined1LeptonStopSelection &);
 
-  //! Destructor
-  ~combined1LeptonStopSelection()
-  { }
+        //! Destructor
+        ~combined1LeptonStopSelection()
+        { }
 
-  //! LoadEvent 
-  bool LoadEvent(const NTEvent * event) { return Event::LoadEvent(event); }
+        //! LoadEvent 
+        bool LoadEvent(const NTEvent * event) 
+        { 
+            return Event::LoadEvent(event); 
+        }
 
-  //! Accessor to jetsAna
-  const std::vector<IPHCTree::NTJet>& GetJetsForAna() const { return jetsAna; }
+        // #####################################
+        // #   Accessors to selected objects   #
+        // #####################################
 
-  //! Accessor to bjetsAna
-  const std::vector<IPHCTree::NTJet>& GetBJetsForAna() const { return bjetsAna; }
+        //! Accessor to selected jets
+        const std::vector<IPHCTree::NTJet>& GetJetsForAna() const { return selectedJets; }
 
-  void FillKinematicP4(const std::vector < IPHCTree::NTMuon >& muon_kin,
-                       const std::vector < IPHCTree::NTElectron >& elec_kin,
-                       const IPHCTree::NTMET& met_kin,
-                       const std::vector < IPHCTree::NTJet >& jet_kin);
-
-  bool GetSUSYstopIsolatedTrackVeto(TLorentzVector lepton_p, float lepton_charge) const;
-  bool GetSUSYstopTauVeto(TLorentzVector lepton_p, float lepton_charge) const;
-
-  std::vector<IPHCTree::NTMuon> GetSUSYstopGoodMuons()     const;
-  std::vector<IPHCTree::NTMuon> GetSUSYstopSelectedMuons() const;
-  
-  std::vector<IPHCTree::NTElectron> GetSUSYstopGoodElectrons    (std::vector<IPHCTree::NTMuon> goodMuons) const;
-  std::vector<IPHCTree::NTElectron> GetSUSYstopSelectedElectrons(std::vector<IPHCTree::NTMuon> goodMuons) const;
-  
-  std::vector<IPHCTree::NTJet> GetSUSYstopSelectedJets(
-            int DataType,
-			const std::vector<IPHCTree::NTMuon>& muon_cand,
-            const std::vector<IPHCTree::NTElectron>& elec_cand) const;
-
-  IPHCTree::NTMET GetSUSYstopType1MET(
-    		    int DataType,
-				const std::vector<IPHCTree::NTMuon>& muon_cand,
-	            const std::vector<IPHCTree::NTElectron>& elec_cand) const;
-
-  IPHCTree::NTMET GetSUSYstopType1PhiMET(
-    	        int DataType,
-				const std::vector<IPHCTree::NTMuon>& muon_cand,
-    			const std::vector<IPHCTree::NTElectron>& elec_cand) const;
-
-  bool doFullSelection(Dataset* dataset);
-  bool checkPathHasBeenFired(string path);
-  bool passTrigger(string channel);
-
-  int GetbtagAlgo() const;
-  float GetbtagDiscriCut() const;
-  int GetNofBtagJetsCut() const; 
-
-  float M3() const             { return top_hadronic.M();}
-  float M_topleptonic() const  { return top_leptonic.M();}
-  float MT_wleptonic() const   { return sqrt( 2.* the_leading_lepton.Pt() * the_met.Pt() *(1. - cos( the_leading_lepton.Phi() - the_met.Phi()) )) ;}
-  float PT_tophad() const      { return top_hadronic.Pt();}
-  float PT_topleptonic() const { return top_leptonic.Pt();}
-  float PT_wleptonic()  const  { return w_leptonic.Pt();}
-  float Dphi_lmet() const      { return the_leading_lepton.DeltaPhi(the_met);}
-  float Dphi_ljet4() const     { return the_leading_lepton.DeltaPhi(the_4thjet);}
-  float Dphi_tops() const      { return top_hadronic.DeltaPhi(top_leptonic);}
-  float Deta_lth() const      
-  { 
-      float deta_e_tophad= the_leading_lepton.Eta() - top_hadronic.Eta();
-      if (deta_e_tophad<0.) deta_e_tophad*=-1.;
-      return deta_e_tophad; 
-  }
-  float Deta_ljet4() const     
-  { 
-      float deta_e_jet4= the_leading_lepton.Eta() - the_4thjet.Eta();
-      if (deta_e_jet4<0.) deta_e_jet4*=-1.;
-      return deta_e_jet4; 
-  }
-  float Met() const            { return the_met.Pt(); }
-
-  float HT() const      
-  { 
-      float HT_ = 0;
-      for (unsigned int i = 0 ; i < jetsAna.size() ; i++)
-          HT_ += jetsAna[i].p4.Pt();
-
-      return HT_;
-  }
-
-  float HT_ratio() const      
-  { 
-      float HT_onTheSideOfMET = 0;
-      float HT_total = 0;
-      for (unsigned int i = 0 ; i < jetsAna.size() ; i++)
-      {
-          if (abs(the_met.DeltaPhi(jetsAna[i].p4)) < 3.1415/2.0) 
-              HT_onTheSideOfMET += jetsAna[i].p4.Pt();
-            
-          HT_total += jetsAna[i].p4.Pt();
-      }
-
-      return HT_onTheSideOfMET / HT_total;
-  }
-      
-  float HadronicChi2(bool runningOnData) const
-  {
-    Resolution Chi2;
-    float value = Chi2.GetChi2(GetJetsForAna(),runningOnData);
-    return value;
-  }
-
-  float MT2W() const
-  {
-    Mt2Com_bisect Mt2;
-    float value = Mt2.calculateMT2w(GetJetsForAna(),
-                                    GetBJetsForAna(),
-                                    the_leading_lepton,
-                                    the_met.Vect().XYvector(),
-                                    "MT2w");
-    return value;
-  }
-  
-  float DPhi_MET_leadingJets() const
-  {
-    TLorentzVector firstLeadingJet;
-    TLorentzVector secondLeadingJet;
-
-    for (unsigned int j = 0 ; j < jetsAna.size() ; j++)
-    {
-       if (jetsAna[j].p4.Pt() > firstLeadingJet.Pt())
-           firstLeadingJet = jetsAna[j].p4;
-
-       else if (jetsAna[j].p4.Pt() > secondLeadingJet.Pt())
-           secondLeadingJet = jetsAna[j].p4;
-    }
-
-    if (abs(the_met.DeltaPhi(firstLeadingJet)) < abs(the_met.DeltaPhi(secondLeadingJet)))
-        return abs(the_met.DeltaPhi(firstLeadingJet));
-    else
-        return abs(the_met.DeltaPhi(secondLeadingJet));
-  }
-
-  float M3b()
-  {
-      TLorentzVector sum;
-      if(jetsAna.size() == 3)
-      {
-          sum = jetsAna[0].p4 + jetsAna[1].p4 + jetsAna[2].p4;
-      }
-      else
-      {
-          // check which jet is closest to lepton, then take other 3
-          double dphimin = 99.;
-          int index_closest_jet = -1;
-          for(int i=0; i < 4; i++)
-          {
-              double dphi = the_leading_lepton.DeltaPhi(jetsAna[i].p4);
-              if (dphi < dphimin)
-              {
-                  dphimin = dphi;
-                  index_closest_jet = i;
-              }
-          }
-
-          for(int i=0; i<4; i++)
-          {
-              if(i!=index_closest_jet)
-                  sum = sum + jetsAna[i].p4;
-          }
-
-      }    
-
-      return sum.M();    
-
-  }
+        //! Accessor to selected b-jets
+        const std::vector<IPHCTree::NTJet>& GetBJetsForAna() const { return selectedBJets; }
 
 
+        // Accessors to selected leptons
+
+        TLorentzVector getTheLeadingLepton()      { return theLeadingLepton; };
+        int            getTheLeadingLeptonPDGId() { return theLeadingLepton_pdgid; };
+        TLorentzVector getTheSecondLepton()       { return theSecondLepton; };
+        int            getTheSecondLeptonPDGId()  { return theSecondLepton_pdgid; };
 
 
+        int getTheNumberOfSelectedLeptons() { return numberOfSelectedLeptons; }
 
+        // #################################
+        // #   Selection-related methods   #
+        // #################################
 
-  TLorentzVector getTheLeadingLepton()      { return the_leading_lepton; };
-  int            getTheLeadingLeptonPDGId() { return the_leading_lepton_pdgid; };
-  TLorentzVector getTheSecondLepton()       { return the_second_lepton; };
-  int            getTheSecondLeptonPDGId()  { return the_second_lepton_pdgid; };
+        // Apply object selection on event
+        void doObjectSelection(bool runningOnData, short int JESvariation = 0);
 
+        // Return true if the event pass the selection
+        bool doEventSelection(bool runningOnData);
 
-  int getTheNumberOfSelectedLeptons() { return numberOfSelectedLeptons; }
+        // Apply JES +/- 1sigma variation on a given jet collection
+        void ApplyJESVariation(std::vector<IPHCTree::NTJet>* jets, bool runningOnData, bool upOrDown);
 
+        void FillKinematicP4();
 
-  // -------------------------------------------------------------
-  //                        data members
-  // -------------------------------------------------------------
- private:
- 
+        // Isolated track veto
+        bool GetSUSYstopIsolatedTrackVeto(
+                TLorentzVector lepton_p, 
+                float lepton_charge) const;
 
-  TLorentzVector all_hadronic;
-  TLorentzVector top_hadronic;
-  TLorentzVector the_met;
-  TLorentzVector the_leading_lepton;
-  TLorentzVector the_second_lepton;
-  TLorentzVector the_4thjet;  
-  TLorentzVector w_leptonic;
-  TLorentzVector top_leptonic;
-  int the_leading_lepton_pdgid;
-  int the_second_lepton_pdgid;
-  
-  //Objects for analysis
-  std::vector<IPHCTree::NTElectron> electronsAna;
-  std::vector<IPHCTree::NTMuon>     muonsAna;
-  std::vector<IPHCTree::NTJet>      jetsAna;
-  std::vector<IPHCTree::NTJet>      bjetsAna;
+        // Tau veto
+        bool GetSUSYstopTauVeto(
+                TLorentzVector lepton_p, 
+                float lepton_charge) const;
 
-  //FactorizedJetCorrector* JetCorrector;
-  int numberOfSelectedLeptons;
+        // Good muons
+        std::vector<IPHCTree::NTMuon> GetSUSYstopGoodMuons()     const;
+
+        // Selected muons
+        std::vector<IPHCTree::NTMuon> GetSUSYstopSelectedMuons() const;
+
+        // Good electrons
+        std::vector<IPHCTree::NTElectron> GetSUSYstopGoodElectrons    (
+                std::vector<IPHCTree::NTMuon> goodMuons) const;
+
+        // Selected electrons
+        std::vector<IPHCTree::NTElectron> GetSUSYstopSelectedElectrons(
+                std::vector<IPHCTree::NTMuon> goodMuons) const;
+
+        // Selected jets
+        std::vector<IPHCTree::NTJet> GetSUSYstopSelectedJets(
+                int DataType,
+                const std::vector<IPHCTree::NTMuon>& muon_cand,
+                const std::vector<IPHCTree::NTElectron>& elec_cand) const;
+
+        // Selected b-jets
+        std::vector<IPHCTree::NTJet> GetSUSYstopSelectedBJets(
+                int DataType, 
+                std::vector<IPHCTree::NTJet> selectedJets) const;
+
+        // Type-1 corrected PF MET
+        IPHCTree::NTMET GetSUSYstopType1MET(
+                int DataType,
+                const std::vector<IPHCTree::NTMuon>& muon_cand,
+                const std::vector<IPHCTree::NTElectron>& elec_cand) const;
+
+        // Type-1 + Phi corrected PF MET
+        IPHCTree::NTMET GetSUSYstopType1PhiMET(
+                int DataType,
+                const std::vector<IPHCTree::NTMuon>& muon_cand,
+                const std::vector<IPHCTree::NTElectron>& elec_cand) const;
+
+        // Check if a given trigger path has been trigerred
+        bool checkPathHasBeenFired(string path);
+
+        // Check if a given set of trigger (single electron, double muon, ...) contains a path that has been fired
+        bool passTrigger(string channel);
+
+        // #######################################
+        // #   High-level variables definition   # 
+        // #######################################
+
+        float M3() const             { return top_hadronic.M();}
+        float M_topleptonic() const  { return top_leptonic.M();}
+        float MT_wleptonic() const   { return sqrt( 2.* theLeadingLepton.Pt() * theMET.Pt() *(1. - cos( theLeadingLepton.Phi() - theMET.Phi()) )) ;}
+        float PT_tophad() const      { return top_hadronic.Pt();}
+        float PT_topleptonic() const { return top_leptonic.Pt();}
+        float PT_wleptonic()  const  { return w_leptonic.Pt();}
+        float Dphi_lmet() const      { return theLeadingLepton.DeltaPhi(theMET);}
+        float Met() const            { return theMET.Pt(); }
+
+        // HT
+        float HT() const      
+        { 
+            float HT_ = 0;
+            for (unsigned int i = 0 ; i < selectedJets.size() ; i++)
+                HT_ += selectedJets[i].p4.Pt();
+
+            return HT_;
+        }
+
+        // HT ratio
+        float HT_ratio() const      
+        { 
+            float HT_onTheSideOfMET = 0;
+            float HT_total = 0;
+            for (unsigned int i = 0 ; i < selectedJets.size() ; i++)
+            {
+                if (abs(theMET.DeltaPhi(selectedJets[i].p4)) < 3.1415/2.0) 
+                    HT_onTheSideOfMET += selectedJets[i].p4.Pt();
+
+                HT_total += selectedJets[i].p4.Pt();
+            }
+
+            return HT_onTheSideOfMET / HT_total;
+        }
+
+        // Hadronic chi2
+        float HadronicChi2(bool runningOnData) const
+        {
+            Resolution Chi2;
+            float value = Chi2.GetChi2(GetJetsForAna(),runningOnData);
+            return value;
+        }
+
+        // MT2W
+        float MT2W() const
+        {
+            Mt2Com_bisect Mt2;
+            float value = Mt2.calculateMT2w(GetJetsForAna(),
+                    GetBJetsForAna(),
+                    theLeadingLepton,
+                    theMET.Vect().XYvector(),
+                    "MT2w");
+            return value;
+        }
+
+        // DeltaPhi(MET, two first leading jets)
+        float DPhi_MET_leadingJets() const
+        {
+            TLorentzVector firstLeadingJet;
+            TLorentzVector secondLeadingJet;
+
+            for (unsigned int j = 0 ; j < selectedJets.size() ; j++)
+            {
+                if (selectedJets[j].p4.Pt() > firstLeadingJet.Pt())
+                    firstLeadingJet = selectedJets[j].p4;
+
+                else if (selectedJets[j].p4.Pt() > secondLeadingJet.Pt())
+                    secondLeadingJet = selectedJets[j].p4;
+            }
+
+            if (abs(theMET.DeltaPhi(firstLeadingJet)) < abs(theMET.DeltaPhi(secondLeadingJet)))
+                return abs(theMET.DeltaPhi(firstLeadingJet));
+            else
+                return abs(theMET.DeltaPhi(secondLeadingJet));
+        }
+
+        // M3b
+        float M3b()
+        {
+            TLorentzVector sum;
+            if(selectedJets.size() == 3)
+            {
+                sum = selectedJets[0].p4 + selectedJets[1].p4 + selectedJets[2].p4;
+            }
+            else
+            {
+                // check which jet is closest to lepton, then take other 3
+                double dphimin = 99.;
+                int index_closest_jet = -1;
+                for(int i=0; i < 4; i++)
+                {
+                    double dphi = theLeadingLepton.DeltaPhi(selectedJets[i].p4);
+                    if (dphi < dphimin)
+                    {
+                        dphimin = dphi;
+                        index_closest_jet = i;
+                    }
+                }
+
+                for(int i=0; i<4; i++)
+                {
+                    if(i!=index_closest_jet)
+                        sum = sum + selectedJets[i].p4;
+                }
+
+            }    
+
+            return sum.M();    
+
+        }
+
+        // -------------------------------------------------------------
+        //                        data members
+        // -------------------------------------------------------------
+    private:
+
+        // Raw objects
+
+        std::vector<IPHCTree::NTJet>      rawJets;
+
+        // Objects for analysis
+
+        int numberOfSelectedLeptons;
+        TLorentzVector theLeadingLepton;
+        TLorentzVector theSecondLepton;
+        int theLeadingLepton_pdgid;
+        int theSecondLepton_pdgid;
+
+        std::vector<IPHCTree::NTElectron> selectedElectrons;
+        std::vector<IPHCTree::NTMuon>     selectedMuons;
+        std::vector<IPHCTree::NTJet>      selectedJets;
+        std::vector<IPHCTree::NTJet>      selectedBJets;
+        TLorentzVector theMET;
+
+        // High-level objects
+
+        TLorentzVector all_hadronic;
+        TLorentzVector top_hadronic;
+        TLorentzVector the_4thjet;  
+        TLorentzVector w_leptonic;
+        TLorentzVector top_leptonic;
+
+        // Corrections managers
+
+        JetCorrectionUncertainty* JESUncertainty_MC;
+        JetCorrectionUncertainty* JESUncertainty_Data;
+
+        BTagShapeInterface* BTagReshape_nominal; 
+        BTagShapeInterface* BTagReshape_upBC; 
+        BTagShapeInterface* BTagReshape_downBC;
+        BTagShapeInterface* BTagReshape_upLight;
+        BTagShapeInterface* BTagReshape_downLight;
+
 };
 
 #endif
