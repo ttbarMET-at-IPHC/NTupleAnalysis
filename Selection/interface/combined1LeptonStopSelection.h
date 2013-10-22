@@ -46,6 +46,9 @@ class combined1LeptonStopSelection: public Selection
         // #   Accessors to selected objects   #
         // #####################################
 
+        //! Accessor to good jets
+        const std::vector<IPHCTree::NTJet>& GetGoodJets() const { return goodJets; }
+
         //! Accessor to selected jets
         const std::vector<IPHCTree::NTJet>& GetJetsForAna() const { return selectedJets; }
 
@@ -71,22 +74,18 @@ class combined1LeptonStopSelection: public Selection
         void doObjectSelection(bool runningOnData, short int JESvariation = 0);
 
         // Return true if the event pass the selection
-        bool doEventSelection(bool runningOnData);
+        bool passEventSelection(bool runningOnData);
 
         // Apply JES +/- 1sigma variation on a given jet collection
-        void ApplyJESVariation(std::vector<IPHCTree::NTJet>* jets, bool runningOnData, bool upOrDown);
+        void ApplyJESVariation(bool runningOnData, bool upOrDown);
 
         void FillKinematicP4();
 
         // Isolated track veto
-        bool GetSUSYstopIsolatedTrackVeto(
-                TLorentzVector lepton_p, 
-                float lepton_charge) const;
+        bool GetSUSYstopIsolatedTrackVeto(TLorentzVector lepton_p, float lepton_charge) const;
 
         // Tau veto
-        bool GetSUSYstopTauVeto(
-                TLorentzVector lepton_p, 
-                float lepton_charge) const;
+        bool GetSUSYstopTauVeto(TLorentzVector lepton_p, float lepton_charge) const;
 
         // Good muons
         std::vector<IPHCTree::NTMuon> GetSUSYstopGoodMuons()     const;
@@ -95,35 +94,25 @@ class combined1LeptonStopSelection: public Selection
         std::vector<IPHCTree::NTMuon> GetSUSYstopSelectedMuons() const;
 
         // Good electrons
-        std::vector<IPHCTree::NTElectron> GetSUSYstopGoodElectrons    (
-                std::vector<IPHCTree::NTMuon> goodMuons) const;
+        std::vector<IPHCTree::NTElectron> GetSUSYstopGoodElectrons    () const;
 
         // Selected electrons
-        std::vector<IPHCTree::NTElectron> GetSUSYstopSelectedElectrons(
-                std::vector<IPHCTree::NTMuon> goodMuons) const;
+        std::vector<IPHCTree::NTElectron> GetSUSYstopSelectedElectrons() const;
 
+        // Good jets
+        std::vector<IPHCTree::NTJet>  GetSUSYstopGoodJets(int DataType) const;
+        
         // Selected jets
-        std::vector<IPHCTree::NTJet> GetSUSYstopSelectedJets(
-                int DataType,
-                const std::vector<IPHCTree::NTMuon>& muon_cand,
-                const std::vector<IPHCTree::NTElectron>& elec_cand) const;
+        std::vector<IPHCTree::NTJet> GetSUSYstopSelectedJets(int DataType) const;
 
         // Selected b-jets
-        std::vector<IPHCTree::NTJet> GetSUSYstopSelectedBJets(
-                int DataType, 
-                std::vector<IPHCTree::NTJet> selectedJets) const;
+        std::vector<IPHCTree::NTJet> GetSUSYstopSelectedBJets(int DataType) const; 
 
         // Type-1 corrected PF MET
-        IPHCTree::NTMET GetSUSYstopType1MET(
-                int DataType,
-                const std::vector<IPHCTree::NTMuon>& muon_cand,
-                const std::vector<IPHCTree::NTElectron>& elec_cand) const;
+        IPHCTree::NTMET GetSUSYstopType1MET(int DataType) const;
 
         // Type-1 + Phi corrected PF MET
-        IPHCTree::NTMET GetSUSYstopType1PhiMET(
-                int DataType,
-                const std::vector<IPHCTree::NTMuon>& muon_cand,
-                const std::vector<IPHCTree::NTElectron>& elec_cand) const;
+        IPHCTree::NTMET GetSUSYstopType1PhiMET(int DataType) const;
 
         // Check if a given trigger path has been trigerred
         bool checkPathHasBeenFired(string path);
@@ -245,6 +234,72 @@ class combined1LeptonStopSelection: public Selection
             return sum.M();    
 
         }
+        
+        TLorentzVector leadingBJet()
+        {
+            TLorentzVector leadingBJet = 0.0;
+            
+            for (unsigned int i = 0 ; i < selectedBJets.size() ; i++)
+            {
+                if (leadingBJet.Pt() < selectedBJets[i].p4.Pt())
+                    leadingBJet      = selectedBJets[i].p4;
+            }
+
+            return leadingBJet;
+        }
+
+        TLorentzVector leadingJet()
+        {
+            TLorentzVector leadingJet = 0.0;
+            
+            for (unsigned int i = 0 ; i < selectedJets.size() ; i++)
+            {
+                if (leadingJet.Pt() < selectedJets[i].p4.Pt())
+                    leadingJet      = selectedJets[i].p4;
+            }
+
+            return leadingJet;
+        }
+
+        TLorentzVector leadingJetByCSV(bool runningOnData)
+        {
+            TLorentzVector leadingCSVJet = 0.0;
+            float maxDiscr = -1.0;
+
+            string discrName;
+            if (runningOnData) discrName = "combinedSecondaryVertexBJetTags";
+            else               discrName = "combinedSecondaryVertexBJetTags_reshapeNominal";
+
+            for (unsigned int i = 0 ; i < selectedJets.size() ; i++)
+            {
+                if (maxDiscr < selectedJets[i].bTag[discrName])
+                {
+                    maxDiscr = selectedJets[i].bTag[discrName];
+                    leadingCSVJet = selectedJets[i].p4;
+                }
+            }
+            
+            return leadingCSVJet;
+        }
+
+        TLorentzVector bJetClosestToLeadingLepton()
+        {
+            float minDeltaRLeptonB = 9999.0;
+            TLorentzVector closestBJet;
+
+            for (unsigned int i = 0 ; i < selectedBJets.size() ; i++)
+            {
+                if (minDeltaRLeptonB    > selectedBJets[i].p4.DeltaR(theLeadingLepton))
+                {
+                    closestBJet         = selectedBJets[i].p4;
+                    minDeltaRLeptonB    = closestBJet.DeltaR(theLeadingLepton);
+                }
+            }
+
+            return closestBJet;
+        }
+
+
 
         // -------------------------------------------------------------
         //                        data members
@@ -254,6 +309,13 @@ class combined1LeptonStopSelection: public Selection
         // Raw objects
 
         std::vector<IPHCTree::NTJet>      rawJets;
+        NTMET                             rawMET;
+
+        // Partially selected objects
+
+        std::vector<IPHCTree::NTElectron> goodElectrons;
+        std::vector<IPHCTree::NTMuon>     goodMuons;
+        std::vector<IPHCTree::NTJet>      goodJets;
 
         // Objects for analysis
 

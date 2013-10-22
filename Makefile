@@ -23,8 +23,8 @@ CXXFLAGS	+= $(ROOTCFLAGS) -I./ -I../../IPHCDataFormat/ -I../../
 LIBS		= $(ROOTLIBS)  -lEG 
 GLIBS		= $(ROOTGLIBS)
 #------------------------------------------------------------------------------
-SOURCES		= $(wildcard Selection/src/*.cc BckgdEstimation/src/*.cc Plots/src/*.cc Measurements/src/*.cc Tools/src/*.cc tinyxml/*.cc EffEstimation/src/*cc EventReco/src/*.cc JEC/src/*.cc BTagReshaping/src/*.cc)
-HEADERS		= $(wildcard Selection/interface/*.h BckgdEstimation/interface/*.h Plots/interface/*.h Measurements/interface/*.h Tools/interface/*.h tinyxml/*.h EffEstimation/interface/*h EventReco/interface/*.h JEC/interface/*.h BTagReshaping/interface/*.cc)
+SOURCES		= $(wildcard Selection/src/*.cc BckgdEstimation/src/*.cc Plots/src/*.cc Measurements/src/*.cc Tools/src/*.cc tinyxml/*.cc EffEstimation/src/*cc EventReco/src/*.cc BTagReshaping/src/*.cc)
+HEADERS		= $(wildcard Selection/interface/*.h BckgdEstimation/interface/*.h Plots/interface/*.h Measurements/interface/*.h Tools/interface/*.h tinyxml/*.h EffEstimation/interface/*h EventReco/interface/*.h BTagReshaping/interface/*.cc)
 OBJECTS		= $(SOURCES:.$(SrcSuf)=.$(ObjSuf))
 DEPENDS		= $(SOURCES:.$(SrcSuf)=.d)
 SOBJECTS	= $(SOURCES:.$(SrcSuf)=.$(DllSuf))
@@ -44,9 +44,9 @@ clean:
 .SUFFIXES: .$(SrcSuf) .C .o .so
 
 
-libNTupleAna.so: $(OBJECTS) JetCorrections/libJetCorrections.so
+libNTupleAna.so: $(OBJECTS) $(shell pwd)/JetCorrections/libJetCorrections.so
 	@echo "Building libNTupleAna..."
 	$(LD) -L${ROOTSYS}/lib $(LIBS) $(SOFLAGS) $(LDFLAGS) $+ -o $@
 
-JetCorrections/libJetCorrections.so:
+$(shell pwd)/JetCorrections/libJetCorrections.so:
 	make -C JetCorrections lib

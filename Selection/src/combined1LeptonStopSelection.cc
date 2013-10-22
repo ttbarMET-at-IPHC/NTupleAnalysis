@@ -8,7 +8,7 @@ using namespace std;
 // ----------------------------------------------------------------------------
 combined1LeptonStopSelection::combined1LeptonStopSelection ()
 {
-    string bTagReshapeSource = "../store/bTagInput/bTagReshaping.root";
+    string bTagReshapeSource = "../inputs/bTagInput/bTagReshaping.root";
 
     BTagReshape_nominal   = new BTagShapeInterface(bTagReshapeSource, 0.0, 0.0);
     BTagReshape_upBC      = new BTagShapeInterface(bTagReshapeSource, 1.0, 0.0);
@@ -16,40 +16,51 @@ combined1LeptonStopSelection::combined1LeptonStopSelection ()
     BTagReshape_upLight   = new BTagShapeInterface(bTagReshapeSource, 0.0, 1.0);
     BTagReshape_downLight = new BTagShapeInterface(bTagReshapeSource, 0.0,-1.0);
 
-    JESUncertainty_MC     = new JetCorrectionUncertainty("../store/JECinput/Fall12_Uncertainty_MC_AK5PF.txt"  );
-    JESUncertainty_Data   = new JetCorrectionUncertainty("../store/JECinput/Fall12_Uncertainty_Data_AK5PF.txt");
+    JESUncertainty_MC     = new JetCorrectionUncertainty("../inputs/JEC/Fall12_Uncertainty_MC_AK5PF.txt"  );
+    JESUncertainty_Data   = new JetCorrectionUncertainty("../inputs/JEC/Fall12_Uncertainty_Data_AK5PF.txt");
 
 }
 
 void combined1LeptonStopSelection::doObjectSelection(bool runningOnData, short int JESvariation)
 {
 
+    // Clear selected object collections
+
+    goodElectrons.clear();
+    goodMuons.clear();
+    goodJets.clear();
     selectedJets.clear();
     selectedBJets.clear();
     selectedElectrons.clear();
     selectedMuons.clear();
 
-    std::vector<IPHCTree::NTMuon>     goodMuons     = GetSUSYstopGoodMuons();
-    std::vector<IPHCTree::NTElectron> goodElectrons = GetSUSYstopGoodElectrons(goodMuons);
+    // Raw / good objects
 
-    selectedMuons     = GetSUSYstopSelectedMuons();
-    selectedElectrons = GetSUSYstopSelectedElectrons(goodMuons);
+    rawJets           = *GetPointer2Jets();
+    rawMET            = GetSelectedMET(false,1.0,false,1.0);
+    goodMuons         = GetSUSYstopGoodMuons();
+    goodElectrons     = GetSUSYstopGoodElectrons();
+    goodJets          = GetSUSYstopGoodJets(runningOnData);
 
-    rawJets           =  *GetPointer2Jets();
+    // JES variations if asked
 
-    if (JESvariation ==  1.0) ApplyJESVariation(&rawJets,runningOnData,true);
-    if (JESvariation == -1.0) ApplyJESVariation(&rawJets,runningOnData,false);
+    if (JESvariation ==  1) ApplyJESVariation(runningOnData,true);
+    if (JESvariation == -1) ApplyJESVariation(runningOnData,false);
 
     // MET
-    NTMET MET         = GetSUSYstopType1PhiMET(runningOnData,goodMuons,goodElectrons);
-    theMET            = TLorentzVector(MET.p2.Px(),MET.p2.Py(),0.,MET.p2.Mod());
+    
+    NTMET tmpMET      = GetSUSYstopType1PhiMET(runningOnData);
+    theMET            = TLorentzVector(tmpMET.p2.Px(),tmpMET.p2.Py(),0.,tmpMET.p2.Mod());
 
-    // Jets
-    selectedJets      = GetSUSYstopSelectedJets (runningOnData,goodMuons,goodElectrons);
-    selectedBJets     = GetSUSYstopSelectedBJets(runningOnData,selectedJets);
+    // Selected objects
+
+    selectedMuons     = GetSUSYstopSelectedMuons();
+    selectedElectrons = GetSUSYstopSelectedElectrons();
+    selectedJets      = GetSUSYstopSelectedJets (runningOnData);
+    selectedBJets     = GetSUSYstopSelectedBJets(runningOnData);
 }
 
-bool combined1LeptonStopSelection::doEventSelection(bool runningOnData)
+bool combined1LeptonStopSelection::passEventSelection(bool runningOnData)
 {
 
     // #####################
@@ -103,6 +114,16 @@ bool combined1LeptonStopSelection::doEventSelection(bool runningOnData)
     return false;
 }
 
+// #############################################################################################
+// #    _____          _       _           _   _                  _                _           #
+// #   |_   _|        | |     | |         | | | |                | |              | |          #
+// #     | | ___  ___ | | __ _| |_ ___  __| | | |_ _ __ __ _  ___| | __ __   _____| |_ ___     #
+// #     | |/ __|/ _ \| |/ _` | __/ _ \/ _` | | __| '__/ _` |/ __| |/ / \ \ / / _ \ __/ _ \    #
+// #    _| |\__ \ (_) | | (_| | ||  __/ (_| | | |_| | | (_| | (__|   <   \ V /  __/ || (_) |   #
+// #    \___/___/\___/|_|\__,_|\__\___|\__,_|  \__|_|  \__,_|\___|_|\_\   \_/ \___|\__\___/    #
+// #                                                                                           #
+// #############################################################################################
+
 bool combined1LeptonStopSelection::GetSUSYstopIsolatedTrackVeto(TLorentzVector lepton_p, float lepton_charge) const
 {
     // Input vector
@@ -150,6 +171,16 @@ bool combined1LeptonStopSelection::GetSUSYstopIsolatedTrackVeto(TLorentzVector l
 
     return true;
 }
+
+// ############################################
+// #   _____                       _          #
+// #  |_   _|                     | |         #
+// #    | | __ _ _   _  __   _____| |_ ___    #
+// #    | |/ _` | | | | \ \ / / _ \ __/ _ \   #
+// #    | | (_| | |_| |  \ V /  __/ || (_) |  #
+// #    \_/\__,_|\__,_|   \_/ \___|\__\___/   #
+// #                                          #
+// ############################################
 
 bool combined1LeptonStopSelection::GetSUSYstopTauVeto(TLorentzVector lepton_p, float lepton_charge) const
 {
@@ -258,6 +289,17 @@ void combined1LeptonStopSelection::FillKinematicP4()
 
 }
 
+// ############################################
+// #   _____    _                             #
+// #  |_   _|  (_)                            #
+// #    | |_ __ _  __ _  __ _  ___ _ __ ___   #
+// #    | | '__| |/ _` |/ _` |/ _ \ '__/ __|  #
+// #    | | |  | | (_| | (_| |  __/ |  \__ \  #
+// #    \_/_|  |_|\__, |\__, |\___|_|  |___/  #
+// #               __/ | __/ |                #
+// #              |___/ |___/                 #
+// #                                          #
+// ############################################
 
 bool combined1LeptonStopSelection::passTrigger(string channel)
 {
@@ -301,7 +343,6 @@ bool combined1LeptonStopSelection::passTrigger(string channel)
 
 }
 
-
 bool combined1LeptonStopSelection::checkPathHasBeenFired(string path)
 {
     std::vector<IPHCTree::NTTriggerPathType> myPaths;
@@ -323,19 +364,22 @@ bool combined1LeptonStopSelection::checkPathHasBeenFired(string path)
 }
 
 
-// ##########################################################
-// #                   Objects selection                    #
-// ##########################################################
+// #################################################################
+// #   _____                 _                                     #
+// #  |  __ \               | |                                    #
+// #  | |  \/ ___   ___   __| |  _ __ ___  _   _  ___  _ __  ___   #
+// #  | | __ / _ \ / _ \ / _` | | '_ ` _ \| | | |/ _ \| '_ \/ __|  #
+// #  | |_\ \ (_) | (_) | (_| | | | | | | | |_| | (_) | | | \__ \  #
+// #   \____/\___/ \___/ \__,_| |_| |_| |_|\__,_|\___/|_| |_|___/  #
+// #                                                               #
+// #################################################################
 
 
-// ----------------------------------------------------------------------------
-//   Good muons selection
-// ----------------------------------------------------------------------------
 std::vector<IPHCTree::NTMuon> combined1LeptonStopSelection::GetSUSYstopGoodMuons() const
 {
 
     // Container for output 
-    std::vector<IPHCTree::NTMuon> selectedMuons;
+    std::vector<IPHCTree::NTMuon> outputVector;
 
     // Get Muons
     std::vector<IPHCTree::NTMuon> localMuons;
@@ -367,23 +411,30 @@ std::vector<IPHCTree::NTMuon> combined1LeptonStopSelection::GetSUSYstopGoodMuons
         if (localMuons[i].dxy_vertex >= 0.02)      continue;
         if (localMuons[i].dz_vertex >= 0.5)        continue;
 
-        selectedMuons.push_back(localMuons[i]);
+        outputVector.push_back(localMuons[i]);
     }
-    std::sort(selectedMuons.begin(),selectedMuons.end(),HighestPt());
-    return selectedMuons;
+    std::sort(outputVector.begin(),outputVector.end(),HighestPt());
+    return outputVector;
 }
 
-// ----------------------------------------------------------------------------
-//   Complete muons selection
-// ----------------------------------------------------------------------------
+// ##############################################################################
+// #   _____      _           _           _                                     #
+// #  /  ___|    | |         | |         | |                                    #
+// #  \ `--.  ___| | ___  ___| |_ ___  __| |  _ __ ___  _   _  ___  _ __  ___   #
+// #   `--. \/ _ \ |/ _ \/ __| __/ _ \/ _` | | '_ ` _ \| | | |/ _ \| '_ \/ __|  #
+// #  /\__/ /  __/ |  __/ (__| ||  __/ (_| | | | | | | | |_| | (_) | | | \__ \  #
+// #  \____/ \___|_|\___|\___|\__\___|\__,_| |_| |_| |_|\__,_|\___/|_| |_|___/  #
+// #                                                                            # 
+// ##############################################################################
+
 std::vector<IPHCTree::NTMuon> combined1LeptonStopSelection::GetSUSYstopSelectedMuons() const
 {
 
     // Container for output
-    std::vector<IPHCTree::NTMuon> selectedMuons;
+    std::vector<IPHCTree::NTMuon> outputVector;
 
     // Get muons
-    std::vector<IPHCTree::NTMuon> muons = GetSUSYstopGoodMuons();
+    std::vector<IPHCTree::NTMuon> muons = goodMuons;
 
     // Loop over muons
     for(unsigned int i=0;i<muons.size();i++)
@@ -404,21 +455,27 @@ std::vector<IPHCTree::NTMuon> combined1LeptonStopSelection::GetSUSYstopSelectedM
         float absIso       = pfIsoCharged + max(0., pfIsoNeutral + pfIsoPhoton- 0.5*pfIsoPU); 
         if (absIso > 5) continue;
 
-        selectedMuons.push_back(muons[i]);
+        outputVector.push_back(muons[i]);
     }
 
-    std::sort(selectedMuons.begin(),selectedMuons.end(),HighestPt());
-    return selectedMuons;
+    std::sort(outputVector.begin(),outputVector.end(),HighestPt());
+    return outputVector;
 }
 
-// ----------------------------------------------------------------------------
-//   Good electrons selection
-// ----------------------------------------------------------------------------
-std::vector<IPHCTree::NTElectron> combined1LeptonStopSelection::GetSUSYstopGoodElectrons(std::vector<IPHCTree::NTMuon> goodMuons) const
+// ##########################################################################
+// #   _____                 _        _           _                         #
+// #  |  __ \               | |      | |         | |                        #
+// #  | |  \/ ___   ___   __| |   ___| | ___  ___| |_ _ __ ___  _ __  ___   #
+// #  | | __ / _ \ / _ \ / _` |  / _ \ |/ _ \/ __| __| '__/ _ \| '_ \/ __|  #
+// #  | |_\ \ (_) | (_) | (_| | |  __/ |  __/ (__| |_| | | (_) | | | \__ \  #
+// #   \____/\___/ \___/ \__,_|  \___|_|\___|\___|\__|_|  \___/|_| |_|___/  #
+// #                                                                        #
+// ##########################################################################
+std::vector<IPHCTree::NTElectron> combined1LeptonStopSelection::GetSUSYstopGoodElectrons() const
 {
 
     // Output vector
-    std::vector<IPHCTree::NTElectron> selectedElectrons;
+    std::vector<IPHCTree::NTElectron> outputVector;
 
     // Get new electrons
     std::vector<IPHCTree::NTElectron> localElectrons;
@@ -488,22 +545,28 @@ std::vector<IPHCTree::NTElectron> combined1LeptonStopSelection::GetSUSYstopGoodE
         if (localElectrons[i].missingHits > 1)            continue;
 
         // Add to selected electrons
-        selectedElectrons.push_back(localElectrons[i]);
+        outputVector.push_back(localElectrons[i]);
     }
 
     // Return output vector after sorting
-    std::sort(selectedElectrons.begin(),selectedElectrons.end(),HighestPt());
-    return selectedElectrons;
+    std::sort(outputVector.begin(),outputVector.end(),HighestPt());
+    return outputVector;
 }
 
-// ----------------------------------------------------------------------------
-//   Complete electron selection
-// ----------------------------------------------------------------------------
-std::vector<IPHCTree::NTElectron> combined1LeptonStopSelection::GetSUSYstopSelectedElectrons(std::vector<IPHCTree::NTMuon> goodMuons) const
+// #######################################################################################
+// #   _____      _           _           _        _           _                         #
+// #  /  ___|    | |         | |         | |      | |         | |                        #
+// #  \ `--.  ___| | ___  ___| |_ ___  __| |   ___| | ___  ___| |_ _ __ ___  _ __  ___   #
+// #   `--. \/ _ \ |/ _ \/ __| __/ _ \/ _` |  / _ \ |/ _ \/ __| __| '__/ _ \| '_ \/ __|  #
+// #  /\__/ /  __/ |  __/ (__| ||  __/ (_| | |  __/ |  __/ (__| |_| | | (_) | | | \__ \  #
+// #  \____/ \___|_|\___|\___|\__\___|\__,_|  \___|_|\___|\___|\__|_|  \___/|_| |_|___/  #
+// #                                                                                     #
+// #######################################################################################
+std::vector<IPHCTree::NTElectron> combined1LeptonStopSelection::GetSUSYstopSelectedElectrons() const
 {
-    std::vector<IPHCTree::NTElectron> selectedElectrons;
+    std::vector<IPHCTree::NTElectron> outputVector;
 
-    std::vector<IPHCTree::NTElectron> electrons = GetSUSYstopGoodElectrons(goodMuons);
+    std::vector<IPHCTree::NTElectron> electrons = goodElectrons;
 
     for(unsigned int i=0;i<electrons.size();i++)
     {
@@ -527,34 +590,77 @@ std::vector<IPHCTree::NTElectron> combined1LeptonStopSelection::GetSUSYstopSelec
         // PF - Reco matching
         if (fabs(electrons[i].bestMatch_pT - electrons[i].p4.Pt()) > 10) continue;
 
-        selectedElectrons.push_back(electrons[i]);
+        outputVector.push_back(electrons[i]);
     }
 
-    std::sort(selectedElectrons.begin(),selectedElectrons.end(),HighestPt());
-    return selectedElectrons;
+    std::sort(outputVector.begin(),outputVector.end(),HighestPt());
+    return outputVector;
 }
 
-// ----------------------------------------------------------------------------
-//   Jets selection
-// ----------------------------------------------------------------------------
+// #########################################################################
+// #     ___ _____ _____                   _       _   _                   #
+// #    |_  |  ___/  ___|                 (_)     | | (_)                  #
+// #      | | |__ \ `--.  __   ____ _ _ __ _  __ _| |_ _  ___  _ __  ___   #
+// #      | |  __| `--. \ \ \ / / _` | '__| |/ _` | __| |/ _ \| '_ \/ __|  #
+// #  /\__/ / |___/\__/ /  \ V / (_| | |  | | (_| | |_| | (_) | | | \__ \  #
+// #  \____/\____/\____/    \_/ \__,_|_|  |_|\__,_|\__|_|\___/|_| |_|___/  #
+// #                                                                       #
+// #########################################################################
 
 // upOrDown : - true  = up
 //            - false = down
-void combined1LeptonStopSelection::ApplyJESVariation(std::vector<IPHCTree::NTJet>* jets, bool runningOnData, bool upOrDown)
+void combined1LeptonStopSelection::ApplyJESVariation(bool runningOnData, bool upOrDown)
 {
-
     JetCorrectionUncertainty* JESUncertainty;
-    if (runningOnData)
-        JESUncertainty = JESUncertainty_Data;
-    else
-        JESUncertainty = JESUncertainty_MC;
+    if (runningOnData)  JESUncertainty = JESUncertainty_Data;
+    else                JESUncertainty = JESUncertainty_MC;
 
-    for (unsigned int i = 0 ; i < jets->size() ; i++)
+    // Get the rawMET x and y
+    float rawMET_x = rawMET.p2.Mod() * cos( rawMET.p2.Phi() );
+    float rawMET_y = rawMET.p2.Mod() * sin( rawMET.p2.Phi() );
+
+    // deltaMETfromJets : correspond to the variation to be propagated to the MET
+    float deltaMETfromJets_x = 0.0;
+    float deltaMETfromJets_y = 0.0;
+
+    // sumJets : used to compute the unclustered energy
+    float sumJets_x = 0.0;
+    float sumJets_y = 0.0;
+
+    for (unsigned int i = 0 ; i < goodJets.size() ; i++)
     {
-        JESUncertainty->setJetPt((*jets)[i].p4.Pt());
-        JESUncertainty->setJetEta((*jets)[i].p4.Eta());
-        (*jets)[i].p4 *= JESUncertainty->getUncertainty(upOrDown);
+        JESUncertainty->setJetPt(goodJets[i].p4.Pt());
+        JESUncertainty->setJetEta(goodJets[i].p4.Eta());
+        float scale = JESUncertainty->getUncertainty(upOrDown);
+
+        deltaMETfromJets_x += (scale - 1) * goodJets[i].p4.Px();
+        deltaMETfromJets_y += (scale - 1) * goodJets[i].p4.Py();
+
+        sumJets_x   += goodJets[i].p4.Px();
+        sumJets_y   += goodJets[i].p4.Py();
+
+        // Correct the jets from the JES variation
+        goodJets[i].p4 *= scale;
     }
+
+    // sumLeptons : used to computed unclustered energy
+    float sumLeptons_x = 0.0;
+    float sumLeptons_y = 0.0;
+
+    for (unsigned int i = 0 ; i < goodMuons.size()     ; i++) { sumLeptons_x += goodMuons[i].p4.Px();     sumLeptons_y += goodMuons[i].p4.Py();     }
+    for (unsigned int i = 0 ; i < goodElectrons.size() ; i++) { sumLeptons_x += goodElectrons[i].p4.Px(); sumLeptons_y += goodElectrons[i].p4.Py(); }
+
+    // Compute unclustered energy
+    float unclusteredEnergy_x = -1.0 * (rawMET_x + sumJets_x + sumLeptons_x);
+    float unclusteredEnergy_y = -1.0 * (rawMET_y + sumJets_y + sumLeptons_y);
+
+    // Compute MET variation from JES, assume 10% uncertainty for unclustered energy
+    float rawMETvariation_x = deltaMETfromJets_x + 0.1 * unclusteredEnergy_x;
+    float rawMETvariation_y = deltaMETfromJets_y + 0.1 * unclusteredEnergy_y;
+
+    // Replace rawMET with the variated MET
+    rawMET.p2.Set(rawMET_x - rawMETvariation_x, \
+                  rawMET_y - rawMETvariation_y);
 }
 
 /*
@@ -612,91 +718,137 @@ DEBUG_MSG  << "1) factors[0] = " << factors[0]
 << " [3] = " << factors[3] << endl; */ /*
                                           }
                                           }
-                                          */
+*/
 
-std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopSelectedJets(
-        int DataType,
-        const std::vector<IPHCTree::NTMuon>& muon_cand,
-        const std::vector<IPHCTree::NTElectron>& elec_cand) const
+// ##################################################
+// #   _____                 _     _      _         #
+// #  |  __ \               | |   (_)    | |        #
+// #  | |  \/ ___   ___   __| |    _  ___| |_ ___   #
+// #  | | __ / _ \ / _ \ / _` |   | |/ _ \ __/ __|  #
+// #  | |_\ \ (_) | (_) | (_| |   | |  __/ |_\__ \  #
+// #   \____/\___/ \___/ \__,_|   | |\___|\__|___/  #
+// #                             _/ |               #
+// #                            |__/                #
+// ##################################################
+std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopGoodJets(
+        int DataType) const
 {
     // Container for output
-    std::vector<IPHCTree::NTJet> selectedJets;
+    std::vector<IPHCTree::NTJet> outputVector;
 
-    //CorrectSUSYstopJets(DataType,rawJets);
-
+    // # #           Get the jets                #
     for(unsigned int i=0;i<rawJets.size();i++)
     {
 
-        // Loose ID
-        if (rawJets[i].ID["LOOSE"] != 1.) continue;
-        if (rawJets[i].ID["PU_IDTight5x"] != 1.) continue;
+        if (rawJets[i].ID["LOOSE"] != 1.) continue; 
 
-        // Eta and Pt cuts
-        if ((DataType == 0) && (fabs(rawJets[i].p4.Eta()) >= 2.4 || rawJets[i].p4.Pt() * rawJets[i].others["corr_L3Absolute"]  < 30)) 
+        if      ((DataType == 0) && (fabs(rawJets[i].p4.Eta()) >= 4.7 
+                    || rawJets[i].p4.Pt() * rawJets[i].others["corr_L3Absolute"]    < 10)) 
             continue; 
-        else if ((DataType == 1) && (fabs(rawJets[i].p4.Eta()) >= 2.4 || rawJets[i].p4.Pt() * rawJets[i].others["corr_L2L3Residual"]  < 30)) 
+        else if ((DataType == 1) && (fabs(rawJets[i].p4.Eta()) >= 4.7 
+                    || rawJets[i].p4.Pt() * rawJets[i].others["corr_L2L3Residual"]  < 10)) 
             continue;
 
-        // Overlap removal
         double deltaRmu = 10000;
         double deltaRel = 10000;
 
-        for(unsigned int imu=0; imu< muon_cand.size(); imu++)
+        for(unsigned int imu=0; imu< goodMuons.size(); imu++)
         {
-            double deltaR = rawJets[i].p4.DeltaR(muon_cand[imu].p4);
+            double deltaR = rawJets[i].p4.DeltaR(goodMuons[imu].p4);
             if(deltaR < deltaRmu) deltaRmu = deltaR;
         }
 
-        for(unsigned int iel=0; iel< elec_cand.size(); iel++)
+        for(unsigned int iel=0; iel< goodElectrons.size(); iel++)
         {
-            double deltaR = rawJets[i].p4.DeltaR(elec_cand[iel].p4);
+            double deltaR = rawJets[i].p4.DeltaR(goodElectrons[iel].p4);
             if(deltaR < deltaRel) deltaRel = deltaR;
         }
 
         if( deltaRmu > 0.4  && deltaRel > 0.4)
-        {
-            selectedJets.push_back(rawJets[i]);
-        }
+            outputVector.push_back(rawJets[i]);
+    }
+
+    return outputVector;
+
+}
+
+// ###############################################################
+// #   _____      _           _           _     _      _         #
+// #  /  ___|    | |         | |         | |   (_)    | |        #
+// #  \ `--.  ___| | ___  ___| |_ ___  __| |    _  ___| |_ ___   #
+// #   `--. \/ _ \ |/ _ \/ __| __/ _ \/ _` |   | |/ _ \ __/ __|  #
+// #  /\__/ /  __/ |  __/ (__| ||  __/ (_| |   | |  __/ |_\__ \  #
+// #  \____/ \___|_|\___|\___|\__\___|\__,_|   | |\___|\__|___/  #
+// #                                          _/ |               #
+// #                                         |__/                #
+// ###############################################################
+
+std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopSelectedJets(
+        int DataType) const
+{
+    // Container for output
+    std::vector<IPHCTree::NTJet> outputVector;
+
+    for(unsigned int i=0;i<goodJets.size();i++)
+    {
+
+        // Loose ID
+        if (goodJets[i].ID["PU_IDTight5x"] != 1.) continue;
+
+        // Eta and Pt cuts
+        if ((DataType == 0) && (fabs(goodJets[i].p4.Eta()) >= 2.4 || goodJets[i].p4.Pt() * goodJets[i].others["corr_L3Absolute"]  < 30)) 
+            continue; 
+        else if ((DataType == 1) && (fabs(goodJets[i].p4.Eta()) >= 2.4 || goodJets[i].p4.Pt() * goodJets[i].others["corr_L2L3Residual"]  < 30)) 
+            continue;
+
     }
 
     // Add reshaped CSV info
-    for (unsigned int i = 0 ; i < selectedJets.size() ; i++)
+    for (unsigned int i = 0 ; i < outputVector.size() ; i++)
     {
-        selectedJets[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeNominal",
-                BTagReshape_nominal  ->reshape(selectedJets[i].p4.Eta(), 
-                    selectedJets[i].p4.Pt(), 
-                    selectedJets[i].bTag["combinedSecondaryVertexBJetTags"], 
-                    selectedJets[i].partonFlavour));
-        selectedJets[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeUpBC",
-                BTagReshape_upBC     ->reshape(selectedJets[i].p4.Eta(), 
-                    selectedJets[i].p4.Pt(), 
-                    selectedJets[i].bTag["combinedSecondaryVertexBJetTags"], 
-                    selectedJets[i].partonFlavour));
-        selectedJets[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeDownBC", 
-                BTagReshape_downBC   ->reshape(selectedJets[i].p4.Eta(), 
-                    selectedJets[i].p4.Pt(), 
-                    selectedJets[i].bTag["combinedSecondaryVertexBJetTags"], 
-                    selectedJets[i].partonFlavour));
-        selectedJets[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeUpLight", 
-                BTagReshape_upLight  ->reshape(selectedJets[i].p4.Eta(), 
-                    selectedJets[i].p4.Pt(), 
-                    selectedJets[i].bTag["combinedSecondaryVertexBJetTags"], 
-                    selectedJets[i].partonFlavour));           
-        selectedJets[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeDownLight",
-                BTagReshape_downLight->reshape(selectedJets[i].p4.Eta(), 
-                    selectedJets[i].p4.Pt(), 
-                    selectedJets[i].bTag["combinedSecondaryVertexBJetTags"], 
-                    selectedJets[i].partonFlavour));          
+        outputVector[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeNominal",
+                BTagReshape_nominal  ->reshape(outputVector[i].p4.Eta(), 
+                    outputVector[i].p4.Pt(), 
+                    outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
+                    outputVector[i].partonFlavour));
+        outputVector[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeUpBC",
+                BTagReshape_upBC     ->reshape(outputVector[i].p4.Eta(), 
+                    outputVector[i].p4.Pt(), 
+                    outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
+                    outputVector[i].partonFlavour));
+        outputVector[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeDownBC", 
+                BTagReshape_downBC   ->reshape(outputVector[i].p4.Eta(), 
+                    outputVector[i].p4.Pt(), 
+                    outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
+                    outputVector[i].partonFlavour));
+        outputVector[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeUpLight", 
+                BTagReshape_upLight  ->reshape(outputVector[i].p4.Eta(), 
+                    outputVector[i].p4.Pt(), 
+                    outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
+                    outputVector[i].partonFlavour));           
+        outputVector[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeDownLight",
+                BTagReshape_downLight->reshape(outputVector[i].p4.Eta(), 
+                    outputVector[i].p4.Pt(), 
+                    outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
+                    outputVector[i].partonFlavour));          
 
     }
 
-    std::sort(selectedJets.begin(),selectedJets.end(),HighestPt());
-    return selectedJets;
+    std::sort(outputVector.begin(),outputVector.end(),HighestPt());
+    return outputVector;
 }
-
+// #######################################################################
+// #   _____      _           _           _   _         _      _         #
+// #  /  ___|    | |         | |         | | | |       (_)    | |        #
+// #  \ `--.  ___| | ___  ___| |_ ___  __| | | |__      _  ___| |_ ___   #
+// #   `--. \/ _ \ |/ _ \/ __| __/ _ \/ _` | | '_ \    | |/ _ \ __/ __|  #
+// #  /\__/ /  __/ |  __/ (__| ||  __/ (_| | | |_) |   | |  __/ |_\__ \  #
+// #  \____/ \___|_|\___|\___|\__\___|\__,_| |_.__/    | |\___|\__|___/  #
+// #                                                  _/ |               #
+// #                                                 |__/                #
+// #######################################################################
 std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopSelectedBJets(
-        int DataType, 
-        std::vector<IPHCTree::NTJet> selectedJets) const
+        int DataType) const
 {
     std::vector<IPHCTree::NTJet> bJets;
 
@@ -716,72 +868,41 @@ std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopSelectedBJ
     return bJets;
 }
 
+// ###########################
+// #  ___  ___ _____ _____   #
+// #  |  \/  ||  ___|_   _|  #
+// #  | .  . || |__   | |    #
+// #  | |\/| ||  __|  | |    #
+// #  | |  | || |___  | |    #
+// #  \_|  |_/\____/  \_/    #
+// #                         #
+// ###########################
 
-// ----------------------------------------------------------------------------
-//   Met computation
-// ----------------------------------------------------------------------------
 
 IPHCTree::NTMET combined1LeptonStopSelection::GetSUSYstopType1MET(
-        int DataType,
-        const std::vector<IPHCTree::NTMuon>& muon_cand,
-        const std::vector<IPHCTree::NTElectron>& elec_cand) const
+        int DataType) const
 {
 
 
-    // Container for output
-    std::vector<IPHCTree::NTJet> selectedJets;
-
-    // # #           Get the jets                #
-    for(unsigned int i=0;i<rawJets.size();i++)
-    {
-
-        if (rawJets[i].ID["LOOSE"] != 1.) continue; 
-
-        if      ((DataType == 0) && (fabs(rawJets[i].p4.Eta()) >= 4.7 
-                    || rawJets[i].p4.Pt() * rawJets[i].others["corr_L3Absolute"]    < 10)) 
-            continue; 
-        else if ((DataType == 1) && (fabs(rawJets[i].p4.Eta()) >= 4.7 
-                    || rawJets[i].p4.Pt() * rawJets[i].others["corr_L2L3Residual"]  < 10)) 
-            continue;
-
-        double deltaRmu = 10000;
-        double deltaRel = 10000;
-
-        for(unsigned int imu=0; imu< muon_cand.size(); imu++)
-        {
-            double deltaR = rawJets[i].p4.DeltaR(muon_cand[imu].p4);
-            if(deltaR < deltaRmu) deltaRmu = deltaR;
-        }
-
-        for(unsigned int iel=0; iel< elec_cand.size(); iel++)
-        {
-            double deltaR = rawJets[i].p4.DeltaR(elec_cand[iel].p4);
-            if(deltaR < deltaRel) deltaRel = deltaR;
-        }
-
-        if( deltaRmu > 0.4  && deltaRel > 0.4)
-            selectedJets.push_back(rawJets[i]);
-    }
-
     // # # Actually compute the type1 met from pfMet #
 
-    NTMET rawPfMET = GetSelectedMET(false,1.0,false,1.0);
+    NTMET rawPfMET = rawMET;
 
     float metx = rawPfMET.p2.Mod() * cos( rawPfMET.p2.Phi() );
     float mety = rawPfMET.p2.Mod() * sin( rawPfMET.p2.Phi() );
 
-    for (unsigned int i = 0 ; i < selectedJets.size() ; i++)
+    for (unsigned int i = 0 ; i < goodJets.size() ; i++)
     {
 
-        float l1Corr = selectedJets[i].others["corr_L1FastJet"];
+        float l1Corr = goodJets[i].others["corr_L1FastJet"];
         float lastCorr = 999.0;
         if (DataType == 0)
-            lastCorr = selectedJets[i].others["corr_L3Absolute"];
+            lastCorr = goodJets[i].others["corr_L3Absolute"];
         else if (DataType == 1)
-            lastCorr = selectedJets[i].others["corr_L2L3Residual"];
+            lastCorr = goodJets[i].others["corr_L2L3Residual"];
 
-        metx += selectedJets[i].p4.Px() * (l1Corr - lastCorr);
-        mety += selectedJets[i].p4.Py() * (l1Corr - lastCorr);
+        metx += goodJets[i].p4.Px() * (l1Corr - lastCorr);
+        mety += goodJets[i].p4.Py() * (l1Corr - lastCorr);
 
     }
 
@@ -791,11 +912,9 @@ IPHCTree::NTMET combined1LeptonStopSelection::GetSUSYstopType1MET(
 }
 
 IPHCTree::NTMET combined1LeptonStopSelection::GetSUSYstopType1PhiMET(
-        int DataType,
-        const std::vector<IPHCTree::NTMuon>& muon_cand,
-        const std::vector<IPHCTree::NTElectron>& elec_cand) const
+        int DataType) const
 {
-    NTMET the_type1met_ = GetSUSYstopType1MET(DataType,muon_cand,elec_cand);
+    NTMET the_type1met_ = GetSUSYstopType1MET(DataType);
     NTMET the_type1phimet_ = the_type1met_;
 
     int Nvtx = GetVertex().size();
