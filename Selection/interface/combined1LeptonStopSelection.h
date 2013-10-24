@@ -42,6 +42,12 @@ class combined1LeptonStopSelection: public Selection
             return Event::LoadEvent(event); 
         }
 
+        void setBTagReshapingInput(string fileName);     
+        void setMCJetCorrectionsInput(string fileName);  
+        void setDataJetCorrectionsInput(string fileName);
+        void setPileUpReweightingInput(string fileName); 
+        void loadCorrections();
+
         // #####################################
         // #   Accessors to selected objects   #
         // #####################################
@@ -268,7 +274,7 @@ class combined1LeptonStopSelection: public Selection
 
             string discrName;
             if (runningOnData) discrName = "combinedSecondaryVertexBJetTags";
-            else               discrName = "combinedSecondaryVertexBJetTags_reshapeNominal";
+            else               discrName = "zz1combinedSecondaryVertexBJetTagsReshapeNominal";
 
             for (unsigned int i = 0 ; i < selectedJets.size() ; i++)
             {
@@ -299,6 +305,23 @@ class combined1LeptonStopSelection: public Selection
             return closestBJet;
         }
 
+        float getPileUpWeight( int nvtx, bool runningOnData )
+        {
+            // From Verena
+
+            if( runningOnData ) return 1;
+
+            if( nvtx > pileUpReweightingHisto->GetNbinsX() )
+                nvtx = pileUpReweightingHisto->GetNbinsX();
+
+            float weight = 0;
+            weight = pileUpReweightingHisto->GetBinContent( pileUpReweightingHisto->FindBin(nvtx) );
+        
+            //we don't want to kill events bc they have no weight
+            if( weight <= 0 ) weight = 1.;
+            return weight;
+
+        }
 
 
         // -------------------------------------------------------------
@@ -341,6 +364,12 @@ class combined1LeptonStopSelection: public Selection
 
         // Corrections managers
 
+        string bTagReshapingInput;     
+        string jetCorrectionsMCInput;
+        string jetCorrectionsDataInput;
+        string pileUpReweightingInput;
+
+        TH1F* pileUpReweightingHisto;
         JetCorrectionUncertainty* JESUncertainty_MC;
         JetCorrectionUncertainty* JESUncertainty_Data;
 

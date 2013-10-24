@@ -121,7 +121,7 @@ double Resolution::GetChi2(const std::vector<IPHCTree::NTJet>& jets, bool runnin
   if (runningOnData)
     CSVtag = "combinedSecondaryVertexBJetTags";
   else
-    CSVtag = "combinedSecondaryVertexBJetTags_reshapeNominal";
+    CSVtag = "zz1combinedSecondaryVertexBJetTagsReshapeNominal";
 
   vector<float> btag;
   for (unsigned int i = 0; i < jets.size(); i++)

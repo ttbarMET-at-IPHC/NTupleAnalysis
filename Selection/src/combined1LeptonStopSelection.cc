@@ -6,20 +6,38 @@ using namespace std;
 // ----------------------------------------------------------------------------
 // Default constructor
 // ----------------------------------------------------------------------------
+
 combined1LeptonStopSelection::combined1LeptonStopSelection ()
 {
-    string bTagReshapeSource = "../inputs/bTagInput/bTagReshaping.root";
-
-    BTagReshape_nominal   = new BTagShapeInterface(bTagReshapeSource, 0.0, 0.0);
-    BTagReshape_upBC      = new BTagShapeInterface(bTagReshapeSource, 1.0, 0.0);
-    BTagReshape_downBC    = new BTagShapeInterface(bTagReshapeSource,-1.0, 0.0);
-    BTagReshape_upLight   = new BTagShapeInterface(bTagReshapeSource, 0.0, 1.0);
-    BTagReshape_downLight = new BTagShapeInterface(bTagReshapeSource, 0.0,-1.0);
-
-    JESUncertainty_MC     = new JetCorrectionUncertainty("../inputs/JEC/Fall12_Uncertainty_MC_AK5PF.txt"  );
-    JESUncertainty_Data   = new JetCorrectionUncertainty("../inputs/JEC/Fall12_Uncertainty_Data_AK5PF.txt");
-
 }
+
+void combined1LeptonStopSelection::setBTagReshapingInput(string fileName)       { bTagReshapingInput      = fileName; }          
+void combined1LeptonStopSelection::setMCJetCorrectionsInput(string fileName)    { jetCorrectionsMCInput   = fileName; }
+void combined1LeptonStopSelection::setDataJetCorrectionsInput(string fileName)  { jetCorrectionsDataInput = fileName; }
+void combined1LeptonStopSelection::setPileUpReweightingInput(string fileName)   { pileUpReweightingInput  = fileName; }
+
+void combined1LeptonStopSelection::loadCorrections()
+{
+    // Load JEC/JES stuff
+
+    BTagReshape_nominal   = new BTagShapeInterface(bTagReshapingInput, 0.0, 0.0);
+    BTagReshape_upBC      = new BTagShapeInterface(bTagReshapingInput, 1.0, 0.0);
+    BTagReshape_downBC    = new BTagShapeInterface(bTagReshapingInput,-1.0, 0.0);
+    BTagReshape_upLight   = new BTagShapeInterface(bTagReshapingInput, 0.0, 1.0);
+    BTagReshape_downLight = new BTagShapeInterface(bTagReshapingInput, 0.0,-1.0);
+
+    // Load JEC/JES stuff
+
+    JESUncertainty_MC     = new JetCorrectionUncertainty(jetCorrectionsMCInput);
+    JESUncertainty_Data   = new JetCorrectionUncertainty(jetCorrectionsDataInput);
+
+    // Load pile-up stuff
+
+    TFile* pileUpReweightingFile = TFile::Open(pileUpReweightingInput.c_str());
+    pileUpReweightingHisto = (TH1F*) pileUpReweightingFile->Get("puWeights");
+    pileUpReweightingHisto->SetName("h_pu_wgt");
+}
+
 
 void combined1LeptonStopSelection::doObjectSelection(bool runningOnData, short int JESvariation)
 {
@@ -58,6 +76,7 @@ void combined1LeptonStopSelection::doObjectSelection(bool runningOnData, short i
     selectedElectrons = GetSUSYstopSelectedElectrons();
     selectedJets      = GetSUSYstopSelectedJets (runningOnData);
     selectedBJets     = GetSUSYstopSelectedBJets(runningOnData);
+
 }
 
 bool combined1LeptonStopSelection::passEventSelection(bool runningOnData)
@@ -663,63 +682,6 @@ void combined1LeptonStopSelection::ApplyJESVariation(bool runningOnData, bool up
                   rawMET_y - rawMETvariation_y);
 }
 
-/*
-   void combined1LeptonStopSelection::InitSUSYstopJEC(string tag)
-   {
-// Create the JetCorrectorParameter objects, the order does not matter.
-JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters((tag+"_L1FastJet_AK5PF.txt").c_str());
-JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters((tag+"_L2Relative_AK5PF.txt").c_str());
-JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters((tag+"_L3Absolute_AK5PF.txt").c_str());
-//JetCorrectorParameters *ResJetPar = new JetCorrectorParameters((tag+"_L2L3Residual_AK5PF.txt").c_str()); 
-
-//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
-vector<JetCorrectorParameters>* vPar = new vector<JetCorrectorParameters>;
-vPar->push_back(*L1JetPar);
-vPar->push_back(*L2JetPar);
-vPar->push_back(*L3JetPar);
-//vPar->push_back(*ResJetPar);
-
-JetCorrector = new FactorizedJetCorrector(*vPar);
-}
-
-void combined1LeptonStopSelection::CorrectSUSYstopJets(int DataType, std::vector<IPHCTree::NTJet> scaledJets) const
-{
-
-for(unsigned int i=0;i<scaledJets.size();i++)
-{
-JetCorrector->setJetEta(scaledJets[i].p4.Eta());
-JetCorrector->setJetPt(scaledJets[i].p4.Pt());
-JetCorrector->setJetE(scaledJets[i].p4.E());
-JetCorrector->setJetA(scaledJets[i].others["jetArea"]);
-JetCorrector->setRho(getRho());
-JetCorrector->setNPV(GetVertex().size());
-
-vector<float> factors = JetCorrector->getSubCorrections();
-
-TLorentzVector p4uncorr = scaledJets[i].p4 * scaledJets[i].others["corr_Uncorr"];
-
-DEBUG_MSG << " i = " << i
-<< " ; eta = " << p4uncorr.Eta() 
-<< " ; jetA = " << scaledJets[i].others["jetArea"]
-<< " ; ID = " << scaledJets[i].ID["LOOSE"]
-<< " ; pTuncorr = " << p4uncorr.Pt() 
-<< " ; pTold = " << scaledJets[i].p4.Pt()
-<< " ; pTnew = " << (p4uncorr * factors[2]).Pt()
-<< endl;
-
-DEBUG_MSG  << "0) L1         = " << scaledJets[i].others["corr_L1FastJet"]
-<< " L2  = " << scaledJets[i].others["corr_L2Relative"]
-<< " L3  = " << scaledJets[i].others["corr_L3Absolute"]
-<< endl;
-
-DEBUG_MSG  << "1) factors[0] = " << factors[0]  
-<< " [1] = " << factors[1]
-<< " [2] = " << factors[2]
-<< " [3] = " << factors[3] << endl; */ /*
-                                          }
-                                          }
-*/
-
 // ##################################################
 // #   _____                 _     _      _         #
 // #  |  __ \               | |   (_)    | |        #
@@ -730,6 +692,7 @@ DEBUG_MSG  << "1) factors[0] = " << factors[0]
 // #                             _/ |               #
 // #                            |__/                #
 // ##################################################
+
 std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopGoodJets(
         int DataType) const
 {
@@ -768,6 +731,39 @@ std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopGoodJets(
             outputVector.push_back(rawJets[i]);
     }
 
+    // Add reshaped CSV info
+    for (unsigned int i = 0 ; i < outputVector.size() ; i++)
+    {
+        float nominal   = BTagReshape_nominal  ->reshape(outputVector[i].p4.Eta(), 
+                                                         outputVector[i].p4.Pt(), 
+                                                         outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
+                                                         outputVector[i].partonFlavour);
+        float upBC      = BTagReshape_upBC     ->reshape(outputVector[i].p4.Eta(), 
+                                                         outputVector[i].p4.Pt(), 
+                                                         outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
+                                                         outputVector[i].partonFlavour);
+        float downBC    = BTagReshape_downBC   ->reshape(outputVector[i].p4.Eta(), 
+                                                         outputVector[i].p4.Pt(), 
+                                                         outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
+                                                         outputVector[i].partonFlavour);
+        float upLight   = BTagReshape_upLight  ->reshape(outputVector[i].p4.Eta(), 
+                                                         outputVector[i].p4.Pt(), 
+                                                         outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
+                                                         outputVector[i].partonFlavour);
+        float downLight = BTagReshape_downLight->reshape(outputVector[i].p4.Eta(), 
+                                                         outputVector[i].p4.Pt(), 
+                                                         outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
+                                                         outputVector[i].partonFlavour);
+
+
+        outputVector[i].bTag.Add("zz1combinedSecondaryVertexBJetTagsReshapeNominal",  nominal  );
+        outputVector[i].bTag.Add("zz2combinedSecondaryVertexBJetTagsReshapeUpBC",    upBC     );
+        outputVector[i].bTag.Add("zz3combinedSecondaryVertexBJetTagsReshapeDownBC",   downBC   );
+        outputVector[i].bTag.Add("zz4combinedSecondaryVertexBJetTagsReshapeUpLight",  upLight  );
+        outputVector[i].bTag.Add("zz5combinedSecondaryVertexBJetTagsReshapeDownLight",downLight);
+    }
+
+    std::sort(outputVector.begin(),outputVector.end(),HighestPt());
     return outputVector;
 
 }
@@ -801,38 +797,9 @@ std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopSelectedJe
         else if ((DataType == 1) && (fabs(goodJets[i].p4.Eta()) >= 2.4 || goodJets[i].p4.Pt() * goodJets[i].others["corr_L2L3Residual"]  < 30)) 
             continue;
 
+        outputVector.push_back(goodJets[i]);
     }
 
-    // Add reshaped CSV info
-    for (unsigned int i = 0 ; i < outputVector.size() ; i++)
-    {
-        outputVector[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeNominal",
-                BTagReshape_nominal  ->reshape(outputVector[i].p4.Eta(), 
-                    outputVector[i].p4.Pt(), 
-                    outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
-                    outputVector[i].partonFlavour));
-        outputVector[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeUpBC",
-                BTagReshape_upBC     ->reshape(outputVector[i].p4.Eta(), 
-                    outputVector[i].p4.Pt(), 
-                    outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
-                    outputVector[i].partonFlavour));
-        outputVector[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeDownBC", 
-                BTagReshape_downBC   ->reshape(outputVector[i].p4.Eta(), 
-                    outputVector[i].p4.Pt(), 
-                    outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
-                    outputVector[i].partonFlavour));
-        outputVector[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeUpLight", 
-                BTagReshape_upLight  ->reshape(outputVector[i].p4.Eta(), 
-                    outputVector[i].p4.Pt(), 
-                    outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
-                    outputVector[i].partonFlavour));           
-        outputVector[i].bTag.Add("combinedSecondaryVertexBJetTags_reshapeDownLight",
-                BTagReshape_downLight->reshape(outputVector[i].p4.Eta(), 
-                    outputVector[i].p4.Pt(), 
-                    outputVector[i].bTag["combinedSecondaryVertexBJetTags"], 
-                    outputVector[i].partonFlavour));          
-
-    }
 
     std::sort(outputVector.begin(),outputVector.end(),HighestPt());
     return outputVector;
@@ -859,7 +826,7 @@ std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopSelectedBJ
         if (DataType == 1)
             discr = selectedJets[j].bTag["combinedSecondaryVertexBJetTags"];
         else
-            discr = selectedJets[j].bTag["combinedSecondaryVertexBJetTags_reshapeNominal"];
+            discr = selectedJets[j].bTag["zz1combinedSecondaryVertexBJetTagsReshapeNominal"];
 
         // Apply CSV medium working point
         if (discr >= 0.679) bJets.push_back(selectedJets[j]);
@@ -919,7 +886,6 @@ IPHCTree::NTMET combined1LeptonStopSelection::GetSUSYstopType1PhiMET(
 
     int Nvtx = GetVertex().size();
 
-    //DEBUG_MSG << "Nvtx = " << Nvtx << endl;;
     float metx = the_type1met_.p2.Px();
     float mety = the_type1met_.p2.Py();
 

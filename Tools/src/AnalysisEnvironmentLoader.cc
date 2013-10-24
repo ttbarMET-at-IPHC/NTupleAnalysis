@@ -187,6 +187,24 @@ void AnalysisEnvironmentLoader::LoadGeneralInfo(int& DataType, float& Luminosity
  
 }
 
+std::string AnalysisEnvironmentLoader::GetInfo(string node, string type, string info)
+{
+
+    elem = NodeLoader(node);
+    if(!elem) return string("");
+
+    while (elem)
+    {
+        if (elem->Attribute("type") == type)
+        {
+            return elem->Attribute(info.c_str());
+        }
+
+        elem = elem->NextSiblingElement ();
+    }
+
+    return string("");
+}
 
 void AnalysisEnvironmentLoader::LoadObservables(vector<Observable>& vobs){
   Reset();
