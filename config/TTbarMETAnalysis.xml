@@ -1,7 +1,4 @@
 <?xml version="1.0"?>
-<!-- ex with eqlumi <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" EqLumi="2287."/> -->
-<!-- ex with NofEvts <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
-<!-- ex with PreselEff NofPSEvts <d name="ttJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofEvts="218404"/> -->
 
 <!--
 	#################################################
@@ -10,21 +7,16 @@
 -->
 
 <Analysis>
-<!--
-	DataType = [ 0: MC ; 1: Data ; 2 : Data & MC ]
-	Luminosity in in pb-1
--->
-<!--a type="General" Verbosity="3" DataType="0" Luminosity="38.35"/>
-<a type="General" Verbosity="3" DataType="0" Luminosity="204.2" LumiError="12." PUWeightFile="/opt/sbg/data/data1/cms/echabert/TopDilep/CMSSW_4_1_4/src/MiniTreeAnalysis/NTupleAnalysis/macros/pudist_200pb.root" />
--->
-<a 						
-   type="General" 
-   Verbosity="3" 
-   DataType="0" 
-   Luminosity="2288.8" 
-   LumiError="2284.1" 
-   PUWeightFile="/opt/sbg/data/data1/cms/ccollard/CMSSW/fichier_root2011/pileup_160404_167151.root" 
+<a type="General" Verbosity="3" DataType="0" Luminosity="2288.8" LumiError="2284.1" />
+
+<a
+    type="Corrections"
+    pileUp="/opt/sbg/data/data4/cms/aaubin/analysisStudy_July13/CMSSW_5_3_2_patch4/src/NTuple/NTupleAnalysis/macros/TTbarMET/inputs/pileUp/puWeights_Summer12_53x_True_19p5ifb.root"
+    bTagReshaping="/opt/sbg/data/data4/cms/aaubin/analysisStudy_July13/CMSSW_5_3_2_patch4/src/NTuple/NTupleAnalysis/macros/TTbarMET/inputs/bTagReshaping/bTagReshaping.root"
+    jetEnergyCorrectionMC="/opt/sbg/data/data4/cms/aaubin/analysisStudy_July13/CMSSW_5_3_2_patch4/src/NTuple/NTupleAnalysis/macros/TTbarMET/inputs/JEC/Fall12_Uncertainty_MC_AK5PF.txt"
+    jetEnergyCorrectionData="/opt/sbg/data/data4/cms/aaubin/analysisStudy_July13/CMSSW_5_3_2_patch4/src/NTuple/NTupleAnalysis/macros/TTbarMET/inputs/JEC/Fall12_Uncertainty_Data_AK5PF.txt"
 />
+
 </Analysis>
 
 <!--
@@ -34,39 +26,61 @@
 -->
 
 <Datasets>
-<!-- add = 1 : run on the sample
+<!-- 
+     add = 1 : run on the sample
      add = 0 : do not run on the sample
      isData = 1 for data; = 0  for MC
-     ls = lineStyle //not yet used
-     lw = lineWidth //not yet used
-     !! important:
-	2 of the 3 information need to be filled
-		- normf (normalisation factor - default = 1)
-		- xsection (cross-section of the processus if it's MC - default = 1)
-		- NofEvts (could be lower than the size of the file. If it's higher or equal to the size, the program will run on the full sample)
-     Preselection
-	if a preselection has been applied before use
-		- PreselEff
-		- NofPSEvts instead of NofEvts 						 
-	 NofEvts="250000" 
- -->
-<d  name="ttbar" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/ttbar-v*/*.root" />
-<!--
-<d  name="W2Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/W2Jets/*.root" />
-<d  name="W3Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/W3Jets/*.root" />
-<d  name="W4Jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/W4Jets/*.root" />
-<d  name="signal" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v2/store/T2tt_*/*.root" />
 -->
 
 <!--
 <d  name="relvalSynchro" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/synchro/our*.root" />
+<d  name="T2bw-025" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_x-025_*/*.root" />
+<d  name="T2bw-050" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_x-050_*/*.root" />
+<d  name="T2bw-075" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_x-075_*/*.root" />
+<d  name="T2tt" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2tt_*/*.root" />
 -->
+<d  name="ttbar" add="1" isData="0" NofEvts="1000" normf="1" xsection="234.0"
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/ttbar-v*/*.root" />
+<!--
+<d  name="W2jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="2159.0"
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/W2jets/*.root" />
+<d  name="W3jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="640.0"
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/W3jets/*.root" />
+<d  name="W4jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="264.0"
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/W4jets/*.root" />
+
+<d  name="T2bw_x-025_withLSP0" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_withLSP0/T2bw_x-025_*.root" />
+<d  name="T2bw_x-050_withLSP0" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_withLSP0/T2bw_x-050_*.root" />
+<d  name="T2bw_x-075_withLSP0" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_withLSP0/T2bw_x-075_*.root" />
+
+<d  name="T2bw_x-025_noLSP0" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_noLSP0/T2bw_x-025_*.root" />
+<d  name="T2bw_x-050_noLSP0" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_noLSP0/T2bw_x-050_*.root" />
+<d  name="T2bw_x-075_noLSP0" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_noLSP0/T2bw_x-075_*.root" />
+
+<d  name="T2bw_x-025_LSP0to700" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_LSP0to700/T2bw_x-025_*.root" />
+<d  name="T2bw_x-050_LSP0to700" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_LSP0to700/T2bw_x-050_*.root" />
+<d  name="T2bw_x-075_LSP0to700" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_LSP0to700/T2bw_x-075_*.root" />
+
+<d  name="T2tt_noLSP0" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2tt_noLSP0/*.root" />
+<d  name="T2tt_withLSP0" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2tt_withLSP0/*.root" />
+-->
+
 
 </Datasets>
 
@@ -74,6 +88,11 @@
 	#################################################
 	#            Selection configuration            #
 	#################################################
+-->
+
+<!--
+    Note : the pT/treshold and others cuts listed are actually not used in the selection
+           see the TTbarMETSelection / combined1LeptonStopSelecton.cc
 -->
 
 <Selection>

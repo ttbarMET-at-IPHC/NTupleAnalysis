@@ -18,7 +18,7 @@ void combined1LeptonStopSelection::setPileUpReweightingInput(string fileName)   
 
 void combined1LeptonStopSelection::loadCorrections()
 {
-    // Load JEC/JES stuff
+    // Load bTagReshaping input
 
     BTagReshape_nominal   = new BTagShapeInterface(bTagReshapingInput, 0.0, 0.0);
     BTagReshape_upBC      = new BTagShapeInterface(bTagReshapingInput, 1.0, 0.0);
@@ -630,6 +630,8 @@ std::vector<IPHCTree::NTElectron> combined1LeptonStopSelection::GetSUSYstopSelec
 //            - false = down
 void combined1LeptonStopSelection::ApplyJESVariation(bool runningOnData, bool upOrDown)
 {
+    short int sign = upOrDown ? 1 : -1;
+
     JetCorrectionUncertainty* JESUncertainty;
     if (runningOnData)  JESUncertainty = JESUncertainty_Data;
     else                JESUncertainty = JESUncertainty_MC;
@@ -648,18 +650,22 @@ void combined1LeptonStopSelection::ApplyJESVariation(bool runningOnData, bool up
 
     for (unsigned int i = 0 ; i < goodJets.size() ; i++)
     {
+        if ((goodJets[i].p4.Pt() < 11) && (abs(goodJets[i].p4.Eta()) > 2.4 ) && (abs(goodJets[i].p4.Eta()) < 3)) continue;
+
         JESUncertainty->setJetPt(goodJets[i].p4.Pt());
         JESUncertainty->setJetEta(goodJets[i].p4.Eta());
         float scale = JESUncertainty->getUncertainty(upOrDown);
-
-        deltaMETfromJets_x += (scale - 1) * goodJets[i].p4.Px();
-        deltaMETfromJets_y += (scale - 1) * goodJets[i].p4.Py();
+        
+        deltaMETfromJets_x += sign * scale * goodJets[i].p4.Px();
+        deltaMETfromJets_y += sign * scale * goodJets[i].p4.Py();
+        if (scale > 2)
+            DEBUG_MSG << "scale = " << scale << " ; Pt = " << goodJets[i].p4.Pt() << " ; Eta = " << goodJets[i].p4.Eta() << endl;
 
         sumJets_x   += goodJets[i].p4.Px();
         sumJets_y   += goodJets[i].p4.Py();
 
         // Correct the jets from the JES variation
-        goodJets[i].p4 *= scale;
+        goodJets[i].p4 *= (1 + sign * scale);
     }
 
     // sumLeptons : used to computed unclustered energy
@@ -674,8 +680,15 @@ void combined1LeptonStopSelection::ApplyJESVariation(bool runningOnData, bool up
     float unclusteredEnergy_y = -1.0 * (rawMET_y + sumJets_y + sumLeptons_y);
 
     // Compute MET variation from JES, assume 10% uncertainty for unclustered energy
-    float rawMETvariation_x = deltaMETfromJets_x + 0.1 * unclusteredEnergy_x;
-    float rawMETvariation_y = deltaMETfromJets_y + 0.1 * unclusteredEnergy_y;
+    float rawMETvariation_x = deltaMETfromJets_x + sign * 0.1 * unclusteredEnergy_x;
+    float rawMETvariation_y = deltaMETfromJets_y + sign * 0.1 * unclusteredEnergy_y;
+
+    /*
+    DEBUG_MSG << " rawMET x : " << rawMET_x  << endl;
+    DEBUG_MSG << " sumJet   : " << sumJets_x << " ; deltaFromJet : " << deltaMETfromJets_x << " ; unclustered : " << unclusteredEnergy_x << endl;
+    DEBUG_MSG << " variation : " << rawMETvariation_x  << endl;
+    DEBUG_MSG << " variated MET x : " << rawMET_x - rawMETvariation_x  << endl;
+    */
 
     // Replace rawMET with the variated MET
     rawMET.p2.Set(rawMET_x - rawMETvariation_x, \
@@ -705,12 +718,7 @@ std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopGoodJets(
 
         if (rawJets[i].ID["LOOSE"] != 1.) continue; 
 
-        if      ((DataType == 0) && (fabs(rawJets[i].p4.Eta()) >= 4.7 
-                    || rawJets[i].p4.Pt() * rawJets[i].others["corr_L3Absolute"]    < 10)) 
-            continue; 
-        else if ((DataType == 1) && (fabs(rawJets[i].p4.Eta()) >= 4.7 
-                    || rawJets[i].p4.Pt() * rawJets[i].others["corr_L2L3Residual"]  < 10)) 
-            continue;
+        if ((fabs(rawJets[i].p4.Eta()) >= 4.7) || (rawJets[i].p4.Pt() < 10)) continue; 
 
         double deltaRmu = 10000;
         double deltaRel = 10000;
@@ -788,14 +796,14 @@ std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopSelectedJe
     for(unsigned int i=0;i<goodJets.size();i++)
     {
 
-        // Loose ID
-        if (goodJets[i].ID["PU_IDTight5x"] != 1.) continue;
+        // Tight ID
+        //if (goodJets[i].ID["PU_IDTight5x"] != 1.) continue;
+        
+        // For sync sample only (had a bug with Tight <-> Loose)
+        if (goodJets[i].ID["PU_IDLoose5x"] != 1.) continue;
 
         // Eta and Pt cuts
-        if ((DataType == 0) && (fabs(goodJets[i].p4.Eta()) >= 2.4 || goodJets[i].p4.Pt() * goodJets[i].others["corr_L3Absolute"]  < 30)) 
-            continue; 
-        else if ((DataType == 1) && (fabs(goodJets[i].p4.Eta()) >= 2.4 || goodJets[i].p4.Pt() * goodJets[i].others["corr_L2L3Residual"]  < 30)) 
-            continue;
+        if ((fabs(goodJets[i].p4.Eta()) >= 2.4) || (goodJets[i].p4.Pt()  < 30)) continue;
 
         outputVector.push_back(goodJets[i]);
     }
@@ -805,12 +813,12 @@ std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopSelectedJe
     return outputVector;
 }
 // #######################################################################
-// #   _____      _           _           _   _         _      _         #
-// #  /  ___|    | |         | |         | | | |       (_)    | |        #
-// #  \ `--.  ___| | ___  ___| |_ ___  __| | | |__      _  ___| |_ ___   #
-// #   `--. \/ _ \ |/ _ \/ __| __/ _ \/ _` | | '_ \    | |/ _ \ __/ __|  #
-// #  /\__/ /  __/ |  __/ (__| ||  __/ (_| | | |_) |   | |  __/ |_\__ \  #
-// #  \____/ \___|_|\___|\___|\__\___|\__,_| |_.__/    | |\___|\__|___/  #
+// #   _____      _           _           _     _       _      _         #
+// #  /  ___|    | |         | |         | |   | |     (_)    | |        #
+// #  \ `--.  ___| | ___  ___| |_ ___  __| |   | |__    _  ___| |_ ___   #
+// #   `--. \/ _ \ |/ _ \/ __| __/ _ \/ _` |   | '_ \  | |/ _ \ __/ __|  #
+// #  /\__/ /  __/ |  __/ (__| ||  __/ (_| |   | |_) | | |  __/ |_\__ \  #
+// #  \____/ \___|_|\___|\___|\__\___|\__,_|   |_.__/  | |\___|\__|___/  #
 // #                                                  _/ |               #
 // #                                                 |__/                #
 // #######################################################################
