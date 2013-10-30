@@ -245,6 +245,8 @@ void combined1LeptonStopSelection::FillKinematicP4()
     {
         if (theLeadingLepton.Pt()  < selectedMuons[i].p4.Pt()) 
         {
+            theSecondLepton        = theLeadingLepton;
+            theSecondLepton_pdgid  = theLeadingLepton_pdgid;
             theLeadingLepton       = selectedMuons[i].p4;
             theLeadingLepton_pdgid = selectedMuons[i].charge * (-13);
         }
@@ -258,6 +260,8 @@ void combined1LeptonStopSelection::FillKinematicP4()
     {
         if (theLeadingLepton.Pt()  < selectedElectrons[i].p4.Pt()) 
         {
+            theSecondLepton        = theLeadingLepton;
+            theSecondLepton_pdgid  = theLeadingLepton_pdgid;
             theLeadingLepton       = selectedElectrons[i].p4;
             theLeadingLepton_pdgid = selectedElectrons[i].charge * (-11);
         }
