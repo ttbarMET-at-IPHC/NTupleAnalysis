@@ -60,15 +60,13 @@ void combined1LeptonStopSelection::doObjectSelection(bool runningOnData, short i
     goodElectrons     = GetSUSYstopGoodElectrons();
     goodJets          = GetSUSYstopGoodJets(runningOnData);
 
-    // JES variations if asked
-
-    if (JESvariation ==  1) ApplyJESVariation(runningOnData,true);
-    if (JESvariation == -1) ApplyJESVariation(runningOnData,false);
-
     // MET
-    
     NTMET tmpMET      = GetSUSYstopType1PhiMET(runningOnData);
     theMET            = TLorentzVector(tmpMET.p2.Px(),tmpMET.p2.Py(),0.,tmpMET.p2.Mod());
+
+    // JES variations if asked
+    if (JESvariation ==  1) ApplyJESVariation(runningOnData,true);
+    if (JESvariation == -1) ApplyJESVariation(runningOnData,false);
 
     // Selected objects
 
@@ -641,8 +639,8 @@ void combined1LeptonStopSelection::ApplyJESVariation(bool runningOnData, bool up
     else                JESUncertainty = JESUncertainty_MC;
 
     // Get the rawMET x and y
-    float rawMET_x = rawMET.p2.Mod() * cos( rawMET.p2.Phi() );
-    float rawMET_y = rawMET.p2.Mod() * sin( rawMET.p2.Phi() );
+    float rawMET_x = theMET.Px();
+    float rawMET_y = theMET.Py();
 
     // deltaMETfromJets : correspond to the variation to be propagated to the MET
     float deltaMETfromJets_x = 0.0;
@@ -654,16 +652,12 @@ void combined1LeptonStopSelection::ApplyJESVariation(bool runningOnData, bool up
 
     for (unsigned int i = 0 ; i < goodJets.size() ; i++)
     {
-        if ((goodJets[i].p4.Pt() < 11) && (abs(goodJets[i].p4.Eta()) > 2.4 ) && (abs(goodJets[i].p4.Eta()) < 3)) continue;
-
         JESUncertainty->setJetPt(goodJets[i].p4.Pt());
         JESUncertainty->setJetEta(goodJets[i].p4.Eta());
         float scale = JESUncertainty->getUncertainty(upOrDown);
         
-        deltaMETfromJets_x += sign * scale * goodJets[i].p4.Px();
-        deltaMETfromJets_y += sign * scale * goodJets[i].p4.Py();
-        if (scale > 2)
-            DEBUG_MSG << "scale = " << scale << " ; Pt = " << goodJets[i].p4.Pt() << " ; Eta = " << goodJets[i].p4.Eta() << endl;
+        deltaMETfromJets_x += scale * goodJets[i].p4.Px();
+        deltaMETfromJets_y += scale * goodJets[i].p4.Py();
 
         sumJets_x   += goodJets[i].p4.Px();
         sumJets_y   += goodJets[i].p4.Py();
@@ -684,19 +678,23 @@ void combined1LeptonStopSelection::ApplyJESVariation(bool runningOnData, bool up
     float unclusteredEnergy_y = -1.0 * (rawMET_y + sumJets_y + sumLeptons_y);
 
     // Compute MET variation from JES, assume 10% uncertainty for unclustered energy
-    float rawMETvariation_x = deltaMETfromJets_x + sign * 0.1 * unclusteredEnergy_x;
-    float rawMETvariation_y = deltaMETfromJets_y + sign * 0.1 * unclusteredEnergy_y;
+    float rawMETvariation_x = sign * (deltaMETfromJets_x + 0.1 * unclusteredEnergy_x);
+    float rawMETvariation_y = sign * (deltaMETfromJets_y + 0.1 * unclusteredEnergy_y);
 
-    /*
+   /* 
     DEBUG_MSG << " rawMET x : " << rawMET_x  << endl;
-    DEBUG_MSG << " sumJet   : " << sumJets_x << " ; deltaFromJet : " << deltaMETfromJets_x << " ; unclustered : " << unclusteredEnergy_x << endl;
-    DEBUG_MSG << " variation : " << rawMETvariation_x  << endl;
+    DEBUG_MSG << " rawMET y : " << rawMET_y  << endl;
+    DEBUG_MSG << " deltaFromJet x : " << deltaMETfromJets_x << " ; unclustered x : " << unclusteredEnergy_x << endl;
+    DEBUG_MSG << " deltaFromJet y : " << deltaMETfromJets_y << " ; unclustered y : " << unclusteredEnergy_y << endl;
     DEBUG_MSG << " variated MET x : " << rawMET_x - rawMETvariation_x  << endl;
-    */
+    DEBUG_MSG << " variated MET y : " << rawMET_x - rawMETvariation_x  << endl;
+   */
 
     // Replace rawMET with the variated MET
-    rawMET.p2.Set(rawMET_x - rawMETvariation_x, \
-                  rawMET_y - rawMETvariation_y);
+    TVector2 tmpMET(rawMET_x - rawMETvariation_x, \
+                    rawMET_y - rawMETvariation_y);
+
+    theMET.SetPxPyPzE(tmpMET.Px(),tmpMET.Py(),0.0,tmpMET.Mod());
 }
 
 // ##################################################
@@ -801,7 +799,7 @@ std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopSelectedJe
     {
 
         // Tight ID
-        //if (goodJets[i].ID["PU_IDTight5x"] != 1.) continue;
+        // if (goodJets[i].ID["PU_IDTight5x"] != 1.) continue;
         
         // For sync sample only (had a bug with Tight <-> Loose)
         if (goodJets[i].ID["PU_IDLoose5x"] != 1.) continue;
