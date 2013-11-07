@@ -49,7 +49,7 @@ public:
           nSkimmedEvent += normHisto->GetEntries();
 
           TH1F* histoFromMTSkimmer = (TH1F*)gROOT->FindObject("numberOfEventsBeforeMTSkimmer");
-          numberOfEventsBeforeMTSkimmer += histoFromMTSkimmer->GetEntries();
+          numberOfEventsBeforeMTSkimmer += histoFromMTSkimmer->GetBinContent(1);
 
         }
         if(nSkimmedEvent>0) PreSelEfficiency_ = (float) eventTree_->GetEntries()/nSkimmedEvent;
