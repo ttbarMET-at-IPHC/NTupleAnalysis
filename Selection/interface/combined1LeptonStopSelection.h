@@ -294,12 +294,18 @@ class combined1LeptonStopSelection: public Selection
             TLorentzVector closestBJet;
 
             for (unsigned int i = 0 ; i < selectedBJets.size() ; i++)
+            if (minDeltaRLeptonB    > selectedBJets[i].p4.DeltaR(theLeadingLepton))
             {
-                if (minDeltaRLeptonB    > selectedBJets[i].p4.DeltaR(theLeadingLepton))
-                {
-                    closestBJet         = selectedBJets[i].p4;
-                    minDeltaRLeptonB    = closestBJet.DeltaR(theLeadingLepton);
-                }
+                closestBJet         = selectedBJets[i].p4;
+                minDeltaRLeptonB    = closestBJet.DeltaR(theLeadingLepton);
+            }
+
+            if (minDeltaRLeptonB == 9999.0)
+            for (unsigned int i = 0 ; i < selectedJets.size() ; i++)
+            if (minDeltaRLeptonB    > selectedJets[i].p4.DeltaR(theLeadingLepton))
+            {
+                closestBJet         = selectedJets[i].p4;
+                minDeltaRLeptonB    = closestBJet.DeltaR(theLeadingLepton);
             }
 
             return closestBJet;
