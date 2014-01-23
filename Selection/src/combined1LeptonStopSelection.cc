@@ -149,6 +149,10 @@ bool combined1LeptonStopSelection::GetSUSYstopIsolatedTrackVeto(TLorentzVector l
     // Loop over pfcandidates
     for(unsigned int i=0 ; i < vetotracks.size() ; i++)
     {
+        // Check pfcandidate doesnt match the selected lepton
+        TLorentzVector vetoTrack_p = vetotracks[i].p4;
+        if (lepton_p.DeltaR(vetoTrack_p) < 0.1) continue;
+        
         bool passCuts = false;
 
         float pfCandId = vetotracks[i].others["id"];
@@ -157,10 +161,11 @@ bool combined1LeptonStopSelection::GetSUSYstopIsolatedTrackVeto(TLorentzVector l
         {
             if ((vetotracks[i].others["gsfPt"] > 5)
                     && (fabs(vetotracks[i].others["gsfdz"]) < 0.05)
-                    && (vetotracks[i].trackIso / vetotracks[i].p4.Pt() < 0.2))    
+                    //&& (vetotracks[i].trackIso / vetotracks[i].p4.Pt() < 0.2))    
+                    && (vetotracks[i].trackIso / vetotracks[i].others["gsfPt"] < 0.2))
                 passCuts = true;
         }
-        else if (abs(pfCandId == 13))
+        else if (abs(pfCandId) == 13)
         {
             if ((vetotracks[i].p4.Pt() > 5)
                     && (fabs(vetotracks[i].dz_firstGoodVertex) < 0.05)
@@ -177,11 +182,6 @@ bool combined1LeptonStopSelection::GetSUSYstopIsolatedTrackVeto(TLorentzVector l
         }
 
         if (passCuts == false) continue;
-
-        // Check pfcandidate doesnt match the selected lepton
-        // + apply opposite charge req.
-        TLorentzVector vetoTrack_p = vetotracks[i].p4;
-        if (lepton_p.DeltaR(vetoTrack_p) < 0.1) continue;
 
         return false;
     }
@@ -799,11 +799,8 @@ std::vector<IPHCTree::NTJet> combined1LeptonStopSelection::GetSUSYstopSelectedJe
     {
 
         // Tight ID
-        // if (goodJets[i].ID["PU_IDTight5x"] != 1.) continue;
+        if (goodJets[i].ID["PU_IDTight5x"] != 1.) continue;
         
-        // For sync sample only (had a bug with Tight <-> Loose)
-        if (goodJets[i].ID["PU_IDLoose5x"] != 1.) continue;
-
         // Eta and Pt cuts
         if ((fabs(goodJets[i].p4.Eta()) >= 2.4) || (goodJets[i].p4.Pt()  < 30)) continue;
 

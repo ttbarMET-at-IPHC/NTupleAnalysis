@@ -32,21 +32,17 @@
      isData = 1 for data; = 0  for MC
 -->
 
-<!--
 <d  name="relvalSynchro" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_July13-v1/store/synchro/our*.root" />
+<d  name="ttbar" add="1" isData="0" NofEvts="-1" normf="1" xsection="234.0"
+    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/ttbar-v*/*.root" />
+<!--
 <d  name="T2bw-025" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_x-025_*/*.root" />
 <d  name="T2bw-050" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_x-050_*/*.root" />
 <d  name="T2bw-075" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2bw_x-075_*/*.root" />
-<d  name="T2tt" add="1" isData="0" NofEvts="-1" normf="1" xsection="1."
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/T2tt_*/*.root" />
--->
-<d  name="ttbar" add="1" isData="0" NofEvts="1000" normf="1" xsection="234.0"
-    filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/ttbar-v*/*.root" />
-<!--
 <d  name="W2jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="2159.0"
     filenames="/opt/sbg/data/data4/cms/aaubin/analysisProd_August13-v1/store/W2jets/*.root" />
 <d  name="W3jets" add="1" isData="0" NofEvts="-1" normf="1" xsection="640.0"
