@@ -52,6 +52,12 @@ class combined1LeptonStopSelection: public Selection
         // #   Accessors to selected objects   #
         // #####################################
 
+        //! Accessor to good electrons
+        const std::vector<IPHCTree::NTElectron>& GetGoodElectrons() const { return goodElectrons; }
+
+        //! Accessor to good muons
+        const std::vector<IPHCTree::NTMuon>& GetGoodMuons() const { return goodMuons; }
+        
         //! Accessor to good jets
         const std::vector<IPHCTree::NTJet>& GetGoodJets() const { return goodJets; }
 
@@ -137,6 +143,7 @@ class combined1LeptonStopSelection: public Selection
         float PT_topleptonic() const { return top_leptonic.Pt();}
         float PT_wleptonic()  const  { return w_leptonic.Pt();}
         float Dphi_lmet() const      { return theLeadingLepton.DeltaPhi(theMET);}
+        float rawMet() const         { return rawMET.p2.Mod(); }
         float Met() const            { return theMET.Pt(); }
 
         // HT
