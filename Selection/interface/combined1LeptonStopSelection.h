@@ -258,6 +258,8 @@ class combined1LeptonStopSelection: public Selection
                     leadingBJet      = selectedBJets[i].p4;
             }
 
+            if (leadingBJet.Pt() == 0.0) return leadingJet();
+
             return leadingBJet;
         }
 
@@ -307,13 +309,15 @@ class combined1LeptonStopSelection: public Selection
                 minDeltaRLeptonB    = closestBJet.DeltaR(theLeadingLepton);
             }
 
-            if (minDeltaRLeptonB == 9999.0)
+            if (minDeltaRLeptonB == 9999.0) return leadingJet();
+            /*
             for (unsigned int i = 0 ; i < selectedJets.size() ; i++)
             if (minDeltaRLeptonB    > selectedJets[i].p4.DeltaR(theLeadingLepton))
             {
                 closestBJet         = selectedJets[i].p4;
                 minDeltaRLeptonB    = closestBJet.DeltaR(theLeadingLepton);
             }
+            */
 
             return closestBJet;
         }
