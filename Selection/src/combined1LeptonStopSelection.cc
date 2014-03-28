@@ -60,6 +60,7 @@ void combined1LeptonStopSelection::doObjectSelection(bool runningOnData, short i
     goodElectrons     = GetSUSYstopGoodElectrons();
     goodJets          = GetSUSYstopGoodJets(runningOnData);
 
+
     // MET
     NTMET tmpMET      = GetSUSYstopType1PhiMET(runningOnData);
     theMET            = TLorentzVector(tmpMET.p2.Px(),tmpMET.p2.Py(),0.,tmpMET.p2.Mod());
@@ -98,12 +99,14 @@ bool combined1LeptonStopSelection::passEventSelection(bool runningOnData)
 
     bool trigger_singleElec = passTrigger("singleElec");
     bool trigger_singleMuon = passTrigger("singleMuon");
+    bool trigger_crossMuon  = passTrigger("crossMuon");
     bool trigger_doubleElec = passTrigger("doubleElec");
     bool trigger_doubleMuon = passTrigger("doubleMuon");
     bool trigger_elecMuon   = passTrigger("muonElec");
 
     if (
-            ((runningOnData) && (trigger_singleElec || trigger_singleMuon || trigger_doubleElec || trigger_doubleMuon || trigger_elecMuon))
+            ((runningOnData) && (trigger_singleElec || trigger_singleMuon || trigger_crossMuon 
+                              || trigger_doubleElec || trigger_doubleMuon || trigger_elecMuon))
             || (!runningOnData)  
        )
     {
@@ -151,6 +154,17 @@ bool combined1LeptonStopSelection::GetSUSYstopIsolatedTrackVeto(TLorentzVector l
     {
         // Check pfcandidate doesnt match the selected lepton
         TLorentzVector vetoTrack_p = vetotracks[i].p4;
+
+        /*
+        DEBUG_MSG << " track i = " << i
+                  << " ; deltaR = " << lepton_p.DeltaR(vetoTrack_p)
+                  << " ; Id = " << vetotracks[i].others["id"]
+                  << " ; Pt = " << vetotracks[i].p4.Pt()
+                  << " ; dz = " << vetotracks[i].dz_firstGoodVertex
+                  << " ; iso = " << vetotracks[i].trackIso / vetotracks[i].p4.Pt()
+                  << endl;
+        */
+
         if (lepton_p.DeltaR(vetoTrack_p) < 0.1) continue;
         
         bool passCuts = false;
@@ -204,6 +218,16 @@ bool combined1LeptonStopSelection::GetSUSYstopTauVeto(TLorentzVector lepton_p, f
     std::vector<IPHCTree::NTTau> localTaus = (*GetPointer2Taus());
     for (unsigned int i = 0 ; i < localTaus.size() ; i++)
     {
+        /*
+        DEBUG_MSG << "tau i = " << i
+                  << " ; Pt = " << localTaus[i].p4.Pt()
+                  << " ; charge = " << localTaus[i].charge * lepton_charge
+                  << " ; decayMode finding = " << localTaus[i].ID["decayModeFinding"]
+                  << " ; delta R = " <<  localTaus[i].p4.DeltaR(lepton_p)
+                  << " ; ID = " << localTaus[i].ID["byMediumIsolationMVA2"]
+                  << endl;
+        */
+
         // Reject tau candidates with pT < 20 GeV
         if (localTaus[i].p4.Pt() < 20) continue;
         // Reject tau candidates with same charge than selected lepton
