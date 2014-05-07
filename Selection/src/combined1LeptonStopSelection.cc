@@ -155,7 +155,7 @@ bool combined1LeptonStopSelection::GetSUSYstopIsolatedTrackVeto(TLorentzVector l
         // Check pfcandidate doesnt match the selected lepton
         TLorentzVector vetoTrack_p = vetotracks[i].p4;
 
-        /*
+        
         DEBUG_MSG << " track i = " << i
                   << " ; deltaR = " << lepton_p.DeltaR(vetoTrack_p)
                   << " ; Id = " << vetotracks[i].others["id"]
@@ -163,13 +163,18 @@ bool combined1LeptonStopSelection::GetSUSYstopIsolatedTrackVeto(TLorentzVector l
                   << " ; dz = " << vetotracks[i].dz_firstGoodVertex
                   << " ; iso = " << vetotracks[i].trackIso / vetotracks[i].p4.Pt()
                   << endl;
-        */
 
         if (lepton_p.DeltaR(vetoTrack_p) < 0.1) continue;
         
         bool passCuts = false;
 
         float pfCandId = vetotracks[i].others["id"];
+
+        if (abs(pfCandId) == 11)
+            DEBUG_MSG << " ; gsfPt = " << vetotracks[i].others["gsfPt"]
+                      << " ; gsfdz = " << vetotracks[i].others["gsfdz"]
+                      << " ; gsfiso = " << vetotracks[i].trackIso / vetotracks[i].p4.Pt()
+                      << endl;
 
         if (abs(pfCandId) == 11)
         {
@@ -487,7 +492,7 @@ std::vector<IPHCTree::NTMuon> combined1LeptonStopSelection::GetSUSYstopSelectedM
 
         // Pt and Eta
         if (muons[i].p4.Pt()  < 20) continue;
-        if (muons[i].p4.Eta() > 2.1) continue;
+        if (abs(muons[i].p4.Eta()) > 2.1) continue;
 
         // Reco - PF matching
         if (fabs(muons[i].bestMatch_pT - muons[i].p4.Pt()) >= 10) continue;
